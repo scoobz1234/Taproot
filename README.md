@@ -9,3 +9,4 @@ Alexis Serpas - serpasalexis26@gmail.com<br>
 Katherine Lennon - katlenno@uat.edu<br>
 Ryan Bachman - ryabach1@uat.edu<br>
 Alejandro Salas - alesalas@uat.edu<br>
+Katie Quinn - katquinn@uat.edu<br>
