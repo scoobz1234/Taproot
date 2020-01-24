@@ -3,9 +3,10 @@ import {
   StyleSheet,
   View } from 'react-native';
 
-  import Header from '../components/Header';
-  import Card from '../components/Card'; // provides card object
-  import Colors from '../constants/Colors'; // provides primary and tertiary color for scheme
+  import Header from './components/Header';
+  import Card from './components/Card'; // provides card object
+  import Colors from './constants/Colors'; // provides primary and tertiary color for scheme
+  import Login from './components/Login'
 
 // use "CTRL + /" to add a comment line. Outside of render blocks you can use //
 // and inside render blocks you can use {/* */} for your comment blocks...
@@ -18,14 +19,24 @@ export default function App() {
     // when adding the style property, you need to use the binding {} brackets
     <View style={styles.view_mainView}>
         <Header/>
+          <Card style={styles.card}>
+              <Login />
+          </Card>
     </View>
+
   );
 }
 
 const styles = StyleSheet.create({
   view_mainView: {
     flex: 1,
+    padding: 10,
     alignItems: 'center',
+  },
+  card: {
+    width: 300,
+    maxWidth: '80%',
+    alignItems: 'center'
   }
 });
 
