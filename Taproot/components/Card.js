@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-const Card = () => {
+const Card = props => {
     // this style setup allows us to override styles with our own styles to increase options..
     return <View style={{...styles.card, ...props.style}}>{props.children}</View>
 };

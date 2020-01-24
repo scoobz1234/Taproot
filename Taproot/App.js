@@ -1,7 +1,8 @@
 import React from 'react';
 import { 
   StyleSheet,
-  View } from 'react-native';
+  View,
+  Text } from 'react-native';
 
   import Header from './components/Header';
   import Card from './components/Card'; // provides card object
@@ -17,14 +18,28 @@ export default function App() {
     // First view is the base view that all apps will need. this is the main view.
     // when adding the style property, you need to use the binding {} brackets
     <View style={styles.view_mainView}>
-        <Header title="Taproot"/>
-    </View>
+        <Header/>
+        <Card styles={styles.card}>
+            <Text>Hello</Text>
+          </Card>
+        </View>
   );
 }
 
 const styles = StyleSheet.create({
   view_mainView: {
-    flex: 1
+    flex: 1,
+    padding: 10,
+    alignItems: 'center'
+  },
+  card_container: {
+    marginTop: 20,
+    alignItems: 'center'
+  },
+  card: {
+    width: 300,
+    maxWidth: '80%',
+    alignItems: 'center'
   }
 });
 
