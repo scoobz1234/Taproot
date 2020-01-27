@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 
-import Colors from '../constants/Colors';
 import Taproot_Logo from '../assets/Taproot_Logo_RGB.jpg';
 
 const Header = props => {
