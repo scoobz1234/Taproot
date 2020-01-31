@@ -17,7 +17,11 @@ const TaprootNavigator = createStackNavigator({
         headerBackTitle: '',
         headerTitle: '',
         headerBackground: (
-            <View style={{backgroundColor: 'white', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+            <View style={{
+                backgroundColor: 'white', 
+                justifyContent: 'flex-end', 
+                alignItems: 'flex-end'
+            }}>
                 <Image
                     style={{
                         width: '75%',
