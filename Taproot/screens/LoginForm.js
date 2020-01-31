@@ -29,7 +29,7 @@ export default class LoginForm extends React.Component {
     checkLogin = () => {
         const { username, password } = this.state;
         if (username === 'admin' && password === 'admin') {
-            this.props.navigation.push('PatientSelectionScreen');
+            this.props.navigation.replace('Patients');
         } else {
             Alert.alert('Error', "Username/Password mismatch", [{ text: 'Retry' }])
         }
@@ -40,7 +40,6 @@ export default class LoginForm extends React.Component {
         return (
             <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
                 <View style={Styles.view_mainView}>
-                    <Header />
                     <KeyboardAvoidingView
                         behavior='padding'
                         keyboardVerticalOffset={10}

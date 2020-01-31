@@ -1,25 +1,70 @@
-import React, { Component } from 'react';
-import { View, Text, Button } from 'react-native';
+import React from 'react';
+import {
+    View,
+    TouchableWithoutFeedback,
+    StyleSheet,
+    Keyboard,
+    FlatList,
+    TextInput
+} from 'react-native';
 
+import { RESIDENTS } from '../data/dummy_data';
+import ResidentItem from '../components/ResidentItem';
 
-export default class PatientSelectionScreen extends React.Component {
+const PatientSelectionScreen = props => {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-        }
-    }
+    const renderResidentItem = itemData => {
+        return <ResidentItem
+            id={itemData.item.id}
+            name={itemData.item.name}
+            facility={itemData.item.facility}
+            onSelectResident={() => { }}
+        />;
+    };
 
-    pressHandler = () => {
-        this.props.navigation.goBack();
-    }
-
-    render() {
-        return (
-            <View>
-                <Text> PatientSelectionScreen </Text>
-                <Button title="Go Back" onPress={this.pressHandler}/>
+    return (
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
+            <View style={styles.screen}>
+                <View style={styles.input_container}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Search"
+                        autoCapitalize="words"
+                        onChangeText={() => {}} />
+                    <View style={{height: '90%'}}>
+                        <FlatList
+                            data={RESIDENTS}
+                            renderItem={renderResidentItem}
+                            style={{ width: '100%' }}
+                        />
+                    </View>
+                </View>
             </View>
-        );
-    }
+        </TouchableWithoutFeedback>
+    );
 }
+
+const styles = StyleSheet.create({
+    screen: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    input: {
+        justifyContent: 'center',
+        width: '100%',
+        height: 45,
+        borderColor: 'black',
+        borderWidth: 1,
+        marginBottom: 5
+    },
+    input_container: {
+        width: '95%',
+        fontSize: 25,
+        borderColor: 'black',
+        borderWidth: 1,
+        marginTop: 20
+    }
+});
+
+export default PatientSelectionScreen;
