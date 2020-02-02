@@ -6,11 +6,13 @@ import { Image, View } from 'react-native';
 //Import your screens here
 import PatientSelectionScreen from '../screens/PatientSelectionScreen';
 import Login from '../screens/LoginForm';
+import Outcomes from '../screens/Outcomes';
 
 // then add your screens to this section.
 const TaprootNavigator = createStackNavigator({
     Login: Login,
     Patients: PatientSelectionScreen,
+    Outcomes: Outcomes,
 }, {
     defaultNavigationOptions: {
         headerStatusBarHeight: 60,
@@ -32,7 +34,6 @@ const TaprootNavigator = createStackNavigator({
                     source={require('../assets/Taproot_Logo_RGB.jpg')}
                 />
             </View>
-
         ),
     }
 }

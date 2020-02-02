@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     StyleSheet,
     View,
@@ -9,12 +9,12 @@ import {
     TouchableOpacity,
     Text,
     TextInput,
-    Alert } from 'react-native';
+    Alert
+} from 'react-native';
 
 import Colors from '../constants/Colors';
 import Card from '../components/Card';
 import Styles from '../constants/Styles';
-import Header from '../components/Header';
 
 export default class LoginForm extends React.Component {
 
@@ -36,7 +36,7 @@ export default class LoginForm extends React.Component {
     }
 
     render() {
-        const { username, password} = this.state
+        const { username, password } = this.state
         return (
             <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
                 <View style={Styles.view_mainView}>
@@ -46,16 +46,16 @@ export default class LoginForm extends React.Component {
                         style={styles.screen}>
                         <Card style={styles.card}>
                             <ScrollView>
+                                <Text style={styles.label}>Email</Text>
                                 <TextInput
-                                    label="Username"
+                                    style={styles.input}
                                     autoCapitalize="none"
-                                    placeholder="userName"
                                     onChangeText={text => this.setState({ username: text })}
                                 />
+                                <Text style={styles.label}>Password</Text>
                                 <TextInput
-                                    label="Password"
+                                    style={styles.input}
                                     autoCapitalize="none"
-                                    placeholder="password"
                                     onChangeText={text => this.setState({ password: text })}
                                 />
                                 <View style={{ paddingTop: 5, paddingBottom: 5 }}>
@@ -95,11 +95,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
+    label: {
+        color: 'black',
+        marginBottom: 5
+    },
     card: {
         width: 400,
         maxWidth: '90%',
         maxHeight: 400,
         padding: 20
+    },
+    input: {
+        borderBottomColor: 'gray',
+        borderBottomWidth: .6,
+        marginBottom: 5
     },
     login_container: {
         backgroundColor: Colors.primary,
@@ -129,14 +138,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
-      },
-      button_cont: {
+    },
+    button_cont: {
         flex: 1,
         padding: 20
-      },
-      text: {
+    },
+    text: {
         color: Colors.primary,
         fontWeight: 'bold',
         fontSize: 18
-      }
+    }
 });

@@ -5,7 +5,7 @@ import Colors from '../constants/Colors';
 const ResidentItem = props => {
     return (
         <View style={styles.residentItem}>
-            <TouchableOpacity onPress={props.onSelectMeal}>
+            <TouchableOpacity onPress={props.onSelect}>
                 <View>
                     <View style={{ ...styles.residentRow, ...styles.residentHeader }}>
                         <View style={styles.container}>

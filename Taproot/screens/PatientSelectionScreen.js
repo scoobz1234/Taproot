@@ -18,7 +18,11 @@ const PatientSelectionScreen = props => {
             id={itemData.item.id}
             name={itemData.item.name}
             facility={itemData.item.facility}
-            onSelectResident={() => { }}
+            onSelect={() => { 
+                props.navigation.navigate({
+                    routeName: 'Outcomes'
+                })
+            }}
         />;
     };
 
