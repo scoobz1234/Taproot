@@ -10,5 +10,4 @@ Katherine Lennon - katlenno@uat.edu<br>
 Ryan Bachman - ryabach1@uat.edu<br>
 Alejandro Salas - alesalas@uat.edu<br>
 Katie Quinn - katquinn@uat.edu<br>
-Nathan Carr - natcarr@uat.edu<br>
 Andrew Sturgeon - AndrewSturgeon99@gmail.com<br>
