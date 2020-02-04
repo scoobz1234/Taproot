@@ -37,6 +37,10 @@ export default class LoginForm extends React.Component {
     }
   };
 
+  LoginOAuth = () => {
+    fetch()
+  };
+
   render() {
     const { username, password } = this.state;
     return (
