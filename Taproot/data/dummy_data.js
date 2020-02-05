@@ -1,6 +1,20 @@
 import Resident from "../Models/Resident";
 import Behaviors from "../Models/Behaviors";
 import Interventions from "../Models/Interventions";
+import Diagnosis from '../Models/Diagnosis';
+
+export const DIAGNOSIS = [
+  new Diagnosis('G31.84','Cognitive Impairment (mild)'),
+  new Diagnosis('G93.1','Anoxic Brain Injury'),
+  new Diagnosis('G31.09','Frontotemporal Dementia'),
+  new Diagnosis('G30.9',"Alzheimer's disease, unspecified"),
+  new Diagnosis('F01','Vascular Dementia'),
+  new Diagnosis('F03','Senile Dementia'),
+  new Diagnosis('G31.83','Dementia with Lewy bodies'),
+  new Diagnosis('I10','Essential (primary) Hypertension'),
+  new Diagnosis('M13.80','Arthritis, unspecified'),
+  new Diagnosis('G12.21','Amyotrophic Lateral Sclerosis'),
+];
 
 export const RESIDENTS = [
   new Resident(
@@ -9,15 +23,15 @@ export const RESIDENTS = [
     "PCH",
     "12/21/1992",
     "Male",
-    "diagnosis 1"
+    ['G31.84','G31.09']
   ),
   new Resident(
     "1496250",
-    "Kyle OShanahan",
+    "Jane Doe",
     "PCH",
     "01/01/1993",
-    "Male",
-    "diagnosis 1"
+    "Female",
+    ['G31.83']
   ),
   new Resident(
     "9956428",
@@ -25,7 +39,7 @@ export const RESIDENTS = [
     "PCH",
     "02/02/1989",
     "Male",
-    "diagnosis 1"
+    ['G30.9','F03']
   ),
   new Resident(
     "6021448",
@@ -33,39 +47,39 @@ export const RESIDENTS = [
     "PCH",
     "03/03/1962",
     "Male",
-    "diagnosis 1"
+    ['I10','M13.80','G12.21']
   ),
   new Resident(
     "0928986",
-    "Tonald Drump",
+    "Robert Ouellette",
     "PCH",
-    "08/09/1956",
+    "09/28/1986",
     "Male",
-    "diagnosis 1"
+    ['F01','G31.09']
   ),
   new Resident(
     "1256859",
-    "Jill Valentine",
+    "Suzanne Palmer",
     "PCH",
     "09/21/1962",
     "Female",
-    "diagnosis 1"
+    ['G31.83']
   ),
   new Resident(
     "4786952",
-    "Sernie Banders",
+    "Patty Mayonaise",
     "PCH",
     "12/21/1991",
-    "Male",
-    "diagnosis 1"
+    "Female",
+    ['I10']
   ),
   new Resident(
     "4297895",
-    "Cillary Hlinton",
+    "Shaun White",
     "PCH",
     "01/10/1925",
-    "Female",
-    "diagnosis 1"
+    "Male",
+    ['I10','M13.80','G12.21','G31.84','G93.1']
   )
 ];
 

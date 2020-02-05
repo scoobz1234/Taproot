@@ -1,8 +1,18 @@
 import React from "react";
-import { View, StyleSheet, Text, FlatList, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  FlatList,
+  Image,
+  ScrollView
+} from "react-native";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+
+import HeaderButton from "../components/HeaderButton";
 
 import Colors from "../constants/Colors";
-import { BEHAVIORS, INTERVENTIONS, RESIDENTS } from "../data/dummy_data";
+import { BEHAVIORS, RESIDENTS } from "../data/dummy_data";
 import BehaviorItem from "../components/BehaviorItem";
 
 class Patient extends React.Component {
@@ -56,9 +66,15 @@ class Patient extends React.Component {
               <Text style={styles.label_text}>{selectedResident.gender}</Text>
             </Text>
             <Text style={styles.label}>Diagnosis: </Text>
-            <Text style={styles.diagnosis_text}>
-              {selectedResident.diagnosis}
-            </Text>
+            <View style={{ height: 30, width: 200 }}>
+              <ScrollView horizontal={true} scrollEventThrottle={16}>
+                {selectedResident.diagnosis.map((item, key) => (
+                  <View key={key} style={styles.diagnosis_item}>
+                    <Text style={styles.diagnosis_text}>{item},</Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
           </View>
         </View>
         <View style={styles.bottom_container}>
@@ -77,6 +93,29 @@ class Patient extends React.Component {
     );
   }
 }
+
+Patient.navigationOptions = navData => {
+  return {
+    headerTitle: "Patient Profile",
+    headerLeft: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title="Back"
+          iconName="ios-arrow-round-back"
+          onPress={() => {
+            navData.navigation.pop();
+          }}
+        />
+      </HeaderButtons>
+    ),
+    headerRight: () => (
+      <Image
+        style={{ width: 150, height: 40, marginRight: 5 }}
+        source={require("../assets/Taproot_Logo_RGB.jpg")}
+      />
+    )
+  };
+};
 
 const styles = StyleSheet.create({
   screen: {
@@ -112,8 +151,9 @@ const styles = StyleSheet.create({
     color: "white"
   },
   diagnosis_text: {
-    fontSize: 14,
-    color: "white"
+    fontSize: 16,
+    color: "white",
+    marginLeft: 3
   },
   list_behaviors: {
     width: "90%",
@@ -124,6 +164,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     backgroundColor: Colors.primary
+  },
+  diagnosis_item: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 5,
+    margin: 1
   }
 });
 
