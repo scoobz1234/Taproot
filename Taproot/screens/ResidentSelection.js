@@ -6,7 +6,7 @@ import HeaderButton from "../components/HeaderButton";
 import { RESIDENTS } from "../data/dummy_data";
 import ResidentItem from "../components/ResidentItem";
 
-class PatientSelectionScreen extends React.Component {
+class ResidentSelectionScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,7 +22,7 @@ class PatientSelectionScreen extends React.Component {
           facility={itemData.item.facility}
           onSelectResident={() => {
             this.props.navigation.navigate({
-              routeName: "Patient",
+              routeName: "Resident",
               params: {
                 residentID: itemData.item.id
               }
@@ -60,9 +60,9 @@ class PatientSelectionScreen extends React.Component {
   }
 }
 
-PatientSelectionScreen.navigationOptions = navData => {
+ResidentSelectionScreen.navigationOptions = navData => {
   return {
-    headerTitle: "Patients",
+    headerTitle: "Residents",
     headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
@@ -117,4 +117,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default PatientSelectionScreen;
+export default ResidentSelectionScreen;

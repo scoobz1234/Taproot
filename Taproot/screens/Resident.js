@@ -96,7 +96,7 @@ class Patient extends React.Component {
 
 Patient.navigationOptions = navData => {
   return {
-    headerTitle: "Patient Profile",
+    headerTitle: "Resident Profile",
     headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item

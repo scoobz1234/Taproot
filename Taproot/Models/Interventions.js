@@ -1,11 +1,15 @@
 class Interventions {
     constructor(
         id,
-        action
+        behaviorids,
+        action,
+        rating
 
     ) {
         this.id = id;
+        this.behaviorids = behaviorids
         this.action = action;
+        this.rating = rating;
     }
 }
 

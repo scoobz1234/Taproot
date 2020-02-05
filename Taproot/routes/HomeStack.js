@@ -8,10 +8,10 @@ import { createDrawerNavigator } from "react-navigation-drawer";
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
 //Import your screens here
-import PatientSelectionScreen from "../screens/PatientSelectionScreen";
+import ResidentSelection from "../screens/ResidentSelection";
 import Login from "../screens/LoginForm";
 import Outcomes from "../screens/Outcomes";
-import Patient from "../screens/Patient";
+import Resident from "../screens/Resident";
 import Interventions from "../screens/Interventions";
 
 import Colors from "../constants/Colors";
@@ -30,9 +30,9 @@ const defaultStackNavOptions = {
 // this is the long way to the interventions screen.
 const LoginRouteNavigator = createStackNavigator(
   {
-    Patients: PatientSelectionScreen,
+    ResidentSelection: ResidentSelection,
     Login: Login,
-    Patient: Patient,
+    Resident: Resident,
     Interventions: Interventions,
     Outcomes: Outcomes
   },
