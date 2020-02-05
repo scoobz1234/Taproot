@@ -18,10 +18,10 @@ Interventions.navigationOptions = navData => {
     headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
-          title="Menu"
-          iconName="ios-menu"
+          title="Back"
+          iconName="ios-arrow-round-back"
           onPress={() => {
-            navData.navigation.toggleDrawer();
+            navData.navigation.pop();
           }}
         />
       </HeaderButtons>
