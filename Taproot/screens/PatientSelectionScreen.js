@@ -22,7 +22,10 @@ class PatientSelectionScreen extends React.Component {
           facility={itemData.item.facility}
           onSelectResident={() => {
             this.props.navigation.navigate({
-              routeName: "Patient"
+              routeName: "Patient",
+              params: {
+                residentID: itemData.item.id
+              }
             });
           }}
         />
