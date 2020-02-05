@@ -28,10 +28,15 @@ class Interventions extends React.Component {
     });
   };
   render() {
-    const behaviorID = this.props.navigation.getParam("BehaviorID");
-    const interventionsToShow = INTERVENTIONS.filter(
-      interventions => interventions.behaviorids.indexOf(behaviorID) >= 0
-    );
+    let behaviorID = '';
+    let interventionsToShow = INTERVENTIONS;
+
+    if (this.props.navigation.getParam('BehaviorID') != null){
+      behaviorID = this.props.navigation.getParam("BehaviorID");
+      interventionsToShow = INTERVENTIONS.filter(
+        interventions => interventions.behaviorids.indexOf(behaviorID) >= 0
+      );
+    }
 
     return (
       <ScrollView style={styles.screen}>

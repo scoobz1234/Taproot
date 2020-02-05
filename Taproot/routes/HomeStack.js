@@ -30,8 +30,8 @@ const defaultStackNavOptions = {
 // this is the long way to the interventions screen.
 const LoginRouteNavigator = createStackNavigator(
   {
-    ResidentSelection: ResidentSelection,
     Login: Login,
+    ResidentSelection: ResidentSelection,
     Resident: Resident,
     Interventions: Interventions,
     Outcomes: Outcomes
