@@ -31,10 +31,14 @@ export default class LoginForm extends React.Component {
   checkLogin = () => {
     const { username, password } = this.state;
     if (username === "admin" && password === "admin") {
-      this.props.navigation.replace("Patients");
+      this.props.navigation.replace("ResidentSelection");
     } else {
       Alert.alert("Error", "Username/Password mismatch", [{ text: "Retry" }]);
     }
+  };
+
+  LoginOAuth = () => {
+    fetch()
   };
 
   render() {
