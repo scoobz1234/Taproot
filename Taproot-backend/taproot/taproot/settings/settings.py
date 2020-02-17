@@ -41,6 +41,7 @@ BASE_APPS = [
 
 ADDED_APPS = [
     'rest_framework',
+    'TR_API',
 ]
 
 INSTALLED_APPS = BASE_APPS + ADDED_APPS
@@ -89,9 +90,17 @@ WSGI_APPLICATION = 'taproot.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'taprootMobileApp01',
+        'USER': 'BraNay',
+        'PASSWORD': 'BrandonNay1',
+        'HOST': 'taproot-sql-01.database.windows.net',
+        'PORT': '1433', # 1433
+
+        'OPTIONS': {
+            'driver': 'SQL Server Native Client 11.0',
+        },
+    },
 }
 
 
