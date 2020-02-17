@@ -3,3 +3,5 @@
 *.vscode/
 *.idea/
 *__pycache__/
+*migrations/
+Taproot-backend/taproot/db.sqlite3
