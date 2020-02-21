@@ -6,6 +6,7 @@ import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
+import { RFValue } from "react-native-responsive-fontsize";
 
 //Import your screens here
 import ResidentSelection from "../screens/ResidentSelection";
@@ -21,8 +22,7 @@ const defaultStackNavOptions = {
     headerStyle: {
       backgroundColor: Platform.OS === "android" ? Colors.primary : ""
     },
-    headerTintColor: Platform.OS === "android" ? "white" : Colors.primary,
-    
+    headerTintColor: Platform.OS === "android" ? "white" : Colors.primary
   }
 };
 
@@ -30,8 +30,8 @@ const defaultStackNavOptions = {
 // this is the long way to the interventions screen.
 const LoginRouteNavigator = createStackNavigator(
   {
-    Login: Login,
     ResidentSelection: ResidentSelection,
+    Login: Login,
     Resident: Resident,
     Interventions: Interventions,
     Outcomes: Outcomes
@@ -61,7 +61,8 @@ const tabScreenConfiguration = {
         );
       },
       tabBarColor: Colors.primary,
-      tabBarLabel: Platform.OS === "android" ? <Text>Login</Text> : "Login"
+      tabBarLabel: Platform.OS === "android" ? <Text>Login</Text> : "Login",
+      activeTintColor: "black",
     }
   },
   Interventions: {
@@ -73,7 +74,12 @@ const tabScreenConfiguration = {
       },
       tabBarColor: Colors.tertiary,
       tabBarLabel:
-        Platform.OS === "android" ? <Text>Interventions</Text> : "Interventions"
+        Platform.OS === "android" ? (
+          <Text>Interventions</Text>
+        ) : (
+          "Interventions"
+        ),
+      activeTintColor: "black"
     }
   }
 };

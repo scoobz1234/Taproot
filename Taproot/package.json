@@ -21,6 +21,7 @@
     "react-native-gesture-handler": "~1.5.0",
     "react-native-paper": "^3.5.1",
     "react-native-reanimated": "~1.4.0",
+    "react-native-responsive-fontsize": "^0.4.3",
     "react-native-safe-area-context": "0.6.0",
     "react-native-screens": "2.0.0-alpha.12",
     "react-native-star-rating": "^1.1.0",

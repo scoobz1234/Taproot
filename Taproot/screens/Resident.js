@@ -5,8 +5,10 @@ import {
   Text,
   FlatList,
   Image,
-  ScrollView
+  ScrollView,
+  Dimensions
 } from "react-native";
+
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../components/HeaderButton";
@@ -14,6 +16,7 @@ import HeaderButton from "../components/HeaderButton";
 import Colors from "../constants/Colors";
 import { BEHAVIORS, RESIDENTS } from "../data/dummy_data";
 import BehaviorItem from "../components/BehaviorItem";
+import { RFValue, RFPercentage } from "react-native-responsive-fontsize";
 
 class Patient extends React.Component {
   constructor(props) {
@@ -66,7 +69,12 @@ class Patient extends React.Component {
               <Text style={styles.label_text}>{selectedResident.gender}</Text>
             </Text>
             <Text style={styles.label}>Diagnosis: </Text>
-            <View style={{ height: 30, width: 200 }}>
+            <View
+              style={{
+                height: Dimensions.get("screen").height * 0.04,
+                width: Dimensions.get("screen").width * 0.5
+              }}
+            >
               <ScrollView horizontal={true} scrollEventThrottle={16}>
                 {selectedResident.diagnosis.map((item, key) => (
                   <View key={key} style={styles.diagnosis_item}>
@@ -79,7 +87,11 @@ class Patient extends React.Component {
         </View>
         <View style={styles.bottom_container}>
           <Text
-            style={{ fontSize: 28, fontWeight: "bold", alignSelf: "center" }}
+            style={{
+              fontSize: RFValue(25, 680),
+              fontWeight: "bold",
+              alignSelf: "center"
+            }}
           >
             Behaviors
           </Text>
@@ -107,12 +119,6 @@ Patient.navigationOptions = navData => {
           }}
         />
       </HeaderButtons>
-    ),
-    headerRight: () => (
-      <Image
-        style={{ width: 150, height: 40, marginRight: 5 }}
-        source={require("../assets/Taproot_Logo_RGB.jpg")}
-      />
     )
   };
 };
@@ -133,8 +139,8 @@ const styles = StyleSheet.create({
   image: {
     borderRadius: 30,
     overflow: "hidden",
-    width: 150,
-    height: 150
+    width: Dimensions.get("screen").width * 0.38,
+    height: Dimensions.get("screen").height * 0.18
   },
   demographic_container: {
     marginTop: 20,
@@ -142,22 +148,22 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   label: {
-    fontSize: 20,
+    fontSize: RFValue(20, 680),
     fontWeight: "bold",
     color: Colors.primary
   },
   label_text: {
-    fontSize: 18,
+    fontSize: RFValue(18, 680),
     color: "white"
   },
   diagnosis_text: {
-    fontSize: 16,
+    fontSize: RFValue(16, 680),
     color: "white",
     marginLeft: 3
   },
   list_behaviors: {
     width: "90%",
-    height: "60%",
+    height: "64%",
     borderColor: "black",
     borderWidth: 1,
     alignSelf: "center",

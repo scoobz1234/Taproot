@@ -10,7 +10,8 @@ import {
   Text,
   TextInput,
   Alert,
-  Image
+  Image,
+  Dimensions
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
@@ -24,8 +25,16 @@ export default class LoginForm extends React.Component {
     super(props);
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      screenWidth: "",
+      screenHeight: ""
     };
+  }
+
+  getScreenSize = () => {
+    const screenWidth = Math.round(Dimensions.get('window').width);
+    const screenHeight = Math.round(Dimensions.get('window').height);
+    this.setState({screenWidth: screenWidth, screenHeight: screenHeight})
   }
 
   checkLogin = () => {
@@ -52,10 +61,7 @@ export default class LoginForm extends React.Component {
         <View style={Styles.view_mainView}>
           <View style={styles.image}>
             <Image
-              style={{
-                width: 375,
-                height: 100
-              }}
+              style={styles.logo}
               source={require("../assets/Taproot_Logo_RGB.jpg")}
             />
           </View>
@@ -131,6 +137,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
+  logo:{
+      width: Dimensions.get('screen').width,
+      height: Dimensions.get('screen').height / 8
+  },
   image: {
     justifyContent: "flex-start",
     alignItems: "flex-start"
@@ -140,9 +150,8 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   card: {
-    width: 400,
+    width: Dimensions.get('screen').width,
     maxWidth: "90%",
-    maxHeight: 400,
     padding: 20
   },
   input: {
@@ -153,7 +162,7 @@ const styles = StyleSheet.create({
   login_container: {
     backgroundColor: Colors.tertiary,
     borderRadius: 10,
-    height: 35,
+    height: Dimensions.get('screen').height / 16,
     justifyContent: "center",
     alignItems: "center"
   },

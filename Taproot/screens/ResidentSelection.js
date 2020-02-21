@@ -1,5 +1,6 @@
 import React from "react";
-import { View, StyleSheet, FlatList, TextInput, Image } from "react-native";
+import { View, StyleSheet, FlatList, TextInput, Image, Dimensions} from "react-native";
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../components/HeaderButton";
@@ -74,12 +75,6 @@ ResidentSelectionScreen.navigationOptions = navData => {
         />
       </HeaderButtons>
     ),
-    headerRight: () => (
-      <Image
-        style={{ width: 150, height: 40, marginRight: 5 }}
-        source={require("../assets/Taproot_Logo_RGB.jpg")}
-      />
-    )
   };
 };
 
@@ -95,14 +90,14 @@ const styles = StyleSheet.create({
   input: {
     justifyContent: "center",
     width: "100%",
-    height: 45,
+    height: Dimensions.get('screen').height / 18,
     marginLeft: 10,
     borderRadius: 10,
-    fontSize: 18
+    fontSize: RFValue(26, 680)
   },
   input_container: {
     width: "95%",
-    fontSize: 25,
+    fontSize: RFValue(26, 680),
     borderColor: "black",
     borderWidth: 1,
     marginTop: 20,

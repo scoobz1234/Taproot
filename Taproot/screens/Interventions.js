@@ -3,11 +3,12 @@ import {
   View,
   StyleSheet,
   Text,
-  Image,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { RFValue } from "react-native-responsive-fontsize";
 import StarRating from "react-native-star-rating";
 
 import HeaderButton from "../components/HeaderButton";
@@ -28,10 +29,10 @@ class Interventions extends React.Component {
     });
   };
   render() {
-    let behaviorID = '';
+    let behaviorID = "";
     let interventionsToShow = INTERVENTIONS;
 
-    if (this.props.navigation.getParam('BehaviorID') != null){
+    if (this.props.navigation.getParam("BehaviorID") != null) {
       behaviorID = this.props.navigation.getParam("BehaviorID");
       interventionsToShow = INTERVENTIONS.filter(
         interventions => interventions.behaviorids.indexOf(behaviorID) >= 0
@@ -59,7 +60,7 @@ class Interventions extends React.Component {
                     rating={intervention.rating}
                     fullStarColor={"white"}
                     emptyStarColor={Colors.primary}
-                    starSize={12}
+                    starSize={RFValue(18, 680)}
                     containerStyle={styles.rating}
                   />
                 </View>
@@ -84,12 +85,6 @@ Interventions.navigationOptions = navData => {
           }}
         />
       </HeaderButtons>
-    ),
-    headerRight: () => (
-      <Image
-        style={{ width: 150, height: 40, marginRight: 5 }}
-        source={require("../assets/Taproot_Logo_RGB.jpg")}
-      />
     )
   };
 };
@@ -109,13 +104,13 @@ const styles = StyleSheet.create({
   },
   text: {
     padding: 5,
-    fontSize: 18,
+    fontSize: RFValue(18, 680),
     fontWeight: "bold",
     textAlign: "center",
     color: Colors.primary
   },
   rating: {
-    width: 100,
+    width: Dimensions.get('screen').width * .35,
     alignSelf: "flex-start",
     paddingLeft: 10,
     paddingBottom: 3
