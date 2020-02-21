@@ -20,9 +20,9 @@ import Colors from "../constants/Colors";
 const defaultStackNavOptions = {
   defaultNavigationOptions: {
     headerStyle: {
-      backgroundColor: Platform.OS === "android" ? Colors.primary : ""
+      backgroundColor: Platform.OS === "android" ? Colors.primary : Colors.primary
     },
-    headerTintColor: Platform.OS === "android" ? "white" : Colors.primary
+    headerTintColor: Platform.OS === "android" ? "white" : "white"
   }
 };
 
@@ -54,15 +54,13 @@ const tabScreenConfiguration = {
   Main: {
     screen: LoginRouteNavigator,
     navigationOptions: {
-      tabBarLabel: "Login",
+      tabBarLabel: "Main",
       tabBarIcon: tabInfo => {
         return (
           <Ionicons name="ios-log-in" size={25} color={tabInfo.tintColor} />
         );
       },
-      tabBarColor: Colors.primary,
-      tabBarLabel: Platform.OS === "android" ? <Text>Login</Text> : "Login",
-      activeTintColor: "black",
+      tabBarLabel: Platform.OS === "android" ? <Text>Main</Text> : "Main",
     }
   },
   Interventions: {
@@ -72,14 +70,12 @@ const tabScreenConfiguration = {
       tabBarIcon: tabInfo => {
         return <Ionicons name="ios-send" size={25} color={tabInfo.tintColor} />;
       },
-      tabBarColor: Colors.tertiary,
       tabBarLabel:
         Platform.OS === "android" ? (
           <Text>Interventions</Text>
         ) : (
           "Interventions"
-        ),
-      activeTintColor: "black"
+        )
     }
   }
 };
@@ -92,7 +88,9 @@ const tabNavigator =
       })
     : createBottomTabNavigator(tabScreenConfiguration, {
         tabBarOptions: {
-          activeTintColor: "white"
+          activeTintColor: Colors.tertiary,
+          inactiveBackgroundColor: 'white',
+          activeBackgroundColor: Colors.primary
         }
       });
 
