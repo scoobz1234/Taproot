@@ -53,7 +53,7 @@ class Caregiver(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    facility = models.ForeignKey('Facility', on_delete=models.PROTECT)  # TODO: behavior, privacy
+    facility = models.ManyToManyField('Facility', null=True)  # TODO: behavior, privacy
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     dob = models.DateField()
