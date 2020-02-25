@@ -24,7 +24,8 @@ from django.contrib.auth.models import User
 
 class Behavior(models.Model):
     name = models.CharField(max_length=50)
-    info = models.TextField()
+    info = models.TextField(null=True)
+    interventions = models.ManyToManyField('Intervention')
 
     def __eq__(self, other):
         return self.pk == other
@@ -52,13 +53,13 @@ class Caregiver(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    facility = models.ForeignKey('Facility', on_delete=models.PROTECT)  # TODO: behavior, privacy
+    facility = models.ManyToManyField('Facility')  # TODO: behavior, privacy
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     dob = models.DateField()
     gender = models.CharField(max_length=1, choices=GENDER)
     email = models.EmailField()
-    phone = models.IntegerField()
+    phone = models.CharField(max_length=20)
     active = models.BooleanField(default=True)
 
     def __eq__(self, other):
@@ -117,7 +118,7 @@ class Facility(models.Model):
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     zipcode = models.IntegerField()
-    phone = models.IntegerField()
+    phone = models.CharField(max_length=20)
 
     def __eq__(self, other):
         return self.pk == other
