@@ -62,4 +62,4 @@ widgetsnbextension==3.5.1
 wincertstore==0.2
 wrapt==1.11.2
 zipp==2.2.0
-pywin32==227
+pywin32>=220
