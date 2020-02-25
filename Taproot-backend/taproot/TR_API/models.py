@@ -24,7 +24,8 @@ from django.contrib.auth.models import User
 
 class Behavior(models.Model):
     name = models.CharField(max_length=50)
-    info = models.TextField()
+    info = models.TextField(null=True)
+    interventions = models.ManyToManyField(null=True)
 
     def __eq__(self, other):
         return self.pk == other
