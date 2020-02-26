@@ -34,19 +34,24 @@ class BehaviorSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'name', 'info', 'interventions']
 
 
-class CaregiverSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Caregiver
-        fields = ['id', 'name', 'info']
-
-
-class EncounterSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Encounter
-        fields = ['id', 'name', 'info']
-
-
 class FacilitySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Facility
-        fields = ['id', 'name', 'info']
+        fields = ['id', 'name', 'city', 'state', 'phone']
+
+
+class CaregiverSerializer(serializers.HyperlinkedModelSerializer):
+    facility = FacilitySerializer(many=True, read_only=True)
+    class Meta:
+        model = Caregiver
+        fields = ['id', 'first_name', 'last_name', 'dob', 'email', 'phone', 'active', 'facility']
+
+
+class EncounterSerializer(serializers.HyperlinkedModelSerializer):
+    behavior = BehaviorSerializer()
+    caregiver = CaregiverSerializer()
+    intervention = InterventionSerializer()
+    class Meta:
+        model = Encounter
+        fields = ['id', 'caregiver', 'behavior', 'intervention', 'date',
+                  'outcome', 'behavior_rating', 'notes']
