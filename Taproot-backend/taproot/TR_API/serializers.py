@@ -53,5 +53,5 @@ class EncounterSerializer(serializers.HyperlinkedModelSerializer):
     intervention = InterventionSerializer()
     class Meta:
         model = Encounter
-        fields = ['id', 'caregiver', 'behavior', 'intervention', 'date',
+        fields = ['id', 'caregiver', 'resident', 'behavior', 'intervention', 'date',
                   'outcome', 'behavior_rating', 'notes']
