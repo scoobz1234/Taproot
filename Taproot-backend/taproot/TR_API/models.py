@@ -82,7 +82,6 @@ class Caregiver(models.Model):
 
 
 class Encounter(models.Model):
-    event = models.AutoField(primary_key=True)
     resident = models.ForeignKey('Resident', on_delete=models.PROTECT, null=True)
     caregiver = models.ForeignKey(User, on_delete=models.PROTECT)
     behavior = models.ForeignKey('Behavior', on_delete=models.PROTECT)
