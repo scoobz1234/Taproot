@@ -17,7 +17,9 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include
 
+from TR_API import views
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('API/', include('TR_API.urls')),
+    path('', admin.site.urls),
+    path('api/', include('TR_API.urls')),
 ]
