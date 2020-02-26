@@ -21,6 +21,6 @@ from TR_API import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('API/', include('TR_API.urls')),
+    path('api/', include('TR_API.urls')),
     path('', admin.site.urls),
 ]
