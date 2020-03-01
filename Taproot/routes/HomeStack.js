@@ -6,15 +6,14 @@ import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
-import { RFValue } from "react-native-responsive-fontsize";
 
 //Import your screens here
-import ResidentSelection from "../screens/ResidentSelection";
 import Login from "../screens/LoginForm";
+import ResidentSelection from "../screens/ResidentSelection";
 import Outcomes from "../screens/Outcomes";
 import Resident from "../screens/Resident";
 import Interventions from "../screens/Interventions";
-
+import Behaviors from "../screens/Behaviors";
 import Colors from "../constants/Colors";
 
 const defaultStackNavOptions = {
@@ -30,8 +29,9 @@ const defaultStackNavOptions = {
 // this is the long way to the interventions screen.
 const LoginRouteNavigator = createStackNavigator(
   {
-    ResidentSelection: ResidentSelection,
+    Behaviors: Behaviors,
     Login: Login,
+    ResidentSelection: ResidentSelection,
     Resident: Resident,
     Interventions: Interventions,
     Outcomes: Outcomes

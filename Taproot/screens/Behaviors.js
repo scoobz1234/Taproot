@@ -10,28 +10,42 @@ import {
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { RFValue } from "react-native-responsive-fontsize";
+import StarRating from "react-native-star-rating";
 
 import HeaderButton from "../components/HeaderButton";
 import Colors from "../constants/Colors";
+import Base64 from "base-64";
+import Axios from "axios";
 
-class Interventions extends React.Component {
+class Behaviors extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isAuthorized: true,
-      isLoading: false,
+      isLoading: true,
       dataSource: null
     };
   }
 
-  onInterventionPress(data) {
-    this.props.navigation.navigate("Outcomes", { data });
+  componentDidMount() {
+    const token = "tradmin:devpasstapr";
+    const hash = Base64.encode(token);
+    const Basic = "Basic " + hash;
+
+    Axios.get("http://taproot-dev.azurewebsites.net/api/behaviors.json", {
+      headers: { Authorization: Basic }
+    })
+      .then(response => response.data)
+      .then(data => {
+        this.setState({ isLoading: false, dataSource: data });
+      });
+  }
+
+  onBehaviorPress(data) {
+    this.props.navigation.navigate("Interventions", { data });
   }
 
   render() {
-    // const { params } = this.props.navigation.state;
-    // const behaviorID = params ? params.behaviorID : null;
-
     if (this.state.isLoading) {
       return (
         <View style={styles.containerStyle}>
@@ -39,33 +53,29 @@ class Interventions extends React.Component {
         </View>
       );
     } else {
-      const behavior = this.props.navigation.state.params.data;
-      console.log(behavior);
       return (
         <ScrollView style={styles.screen}>
-          {this.props.navigation.state.params.data.interventions.map(
-            (interventions, i) => {
-              return (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => this.onInterventionPress(interventions.info)}
-                >
-                  <View style={styles.list}>
-                    <Text style={styles.text}>{interventions.name} </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            }
-          )}
+          {this.state.dataSource.map((behavior, i) => {
+            return (
+              <TouchableOpacity
+                key={i}
+                onPress={() => this.onBehaviorPress(behavior)}
+              >
+                <View style={styles.list}>
+                  <Text style={styles.text}>{behavior.name} </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       );
     }
   }
 }
 
-Interventions.navigationOptions = navData => {
+Behaviors.navigationOptions = navData => {
   return {
-    headerTitle: "Interventions",
+    headerTitle: "Behaviors",
     headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
@@ -108,4 +118,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Interventions;
+export default Behaviors;

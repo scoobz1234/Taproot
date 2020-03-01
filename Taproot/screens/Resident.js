@@ -16,7 +16,7 @@ import HeaderButton from "../components/HeaderButton";
 import Colors from "../constants/Colors";
 import { BEHAVIORS, RESIDENTS } from "../data/dummy_data";
 import BehaviorItem from "../components/BehaviorItem";
-import { RFValue, RFPercentage } from "react-native-responsive-fontsize";
+import { RFValue } from "react-native-responsive-fontsize";
 
 class Patient extends React.Component {
   constructor(props) {
