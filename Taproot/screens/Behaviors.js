@@ -28,7 +28,7 @@ class Behaviors extends React.Component {
   }
 
   componentDidMount() {
-    const token = "tradmin:devpasstapr";
+    const token = "tradmin:devpasstaproot";
     const hash = Base64.encode(token);
     const Basic = "Basic " + hash;
 
@@ -38,7 +38,7 @@ class Behaviors extends React.Component {
       .then(response => response.data)
       .then(data => {
         this.setState({ isLoading: false, dataSource: data });
-      });
+      }).catch(error => console.log(error))
   }
 
   onBehaviorPress(data) {

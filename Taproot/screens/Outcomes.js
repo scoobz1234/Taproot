@@ -4,13 +4,18 @@ import {
   View,
   TouchableOpacity,
   Text,
-  Dimensions
+  TextInput,
+  Dimensions,
+  Modal,
+  TouchableHighlight,
+  Alert,
+  ToastAndroid
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { RFValue } from "react-native-responsive-fontsize";
 import Base64 from "base-64";
 import Axios from "axios";
-var Buffer = require('buffer').Buffer;
+import StarRating from "react-native-star-rating";
 
 import HeaderButton from "../components/HeaderButton";
 import Colors from "../constants/Colors";
@@ -21,57 +26,99 @@ class OutcomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "tradmin",
-      password: "devpasstapr",
-      token: null
+      url: "https://taproot-dev.azurewebsites.net/api/new-encounter/",
+      token: "tradmin:devpasstaproot",
+      notes: "",
+      rating: 1,
+      modalVisible: false
     };
   }
 
-  postRequest() {
-    const token = "tradmin:devpasstapr";
-    const hash = Base64.encode(token);
-    const Basic = "Basic " + hash;
-    const base64encodedData = new Buffer(token).toString('base64');
+  setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+  }
 
-    fetch("https://taproot-dev.azurewebsites.net/TR_API/intervention/add/", {credentials: 'same-origin'}, {
-        method: "POST",
+  onRatingSubmit(behaviorURL, interventionURL) {
+    this.setModalVisible(!this.state.modalVisible);
+    this.postRequest(behaviorURL, interventionURL, true);
+  }
+
+  onNotesChange = notes => {
+    this.setState({ notes });
+  };
+
+  onStarRatingPress = rating => {
+    this.setState({ rating });
+  };
+
+  postRequest(behaviorURL, interventionURL, didWork) {
+    const hash = Base64.encode(this.state.token);
+    const Auth = "Basic " + hash;
+
+    Axios.post(
+      this.state.url,
+      {
+        caregiver: "http://taproot-dev.azurewebsites.net/api/caregivers/1/",
+        behavior: behaviorURL,
+        intervention: interventionURL,
+        outcome: didWork,
+        behavior_rating: this.state.rating,
+        notes: this.state.notes
+      },
+      {
         headers: {
-          "Accept": "application/json, text/plain, */*",
-          "Content-Type": "multipart/form-data",
-          'Authorization': 'Basic '+ base64encodedData
-        },
-        body: {
-          Name: "Some Name",
-          Info: "Some Information"
+          Authorization: Auth,
+          "Content-Type": "application/json"
         }
       }
     )
       .then(response => {
-        return console.log(JSON.stringify(response));
+        return console.log("SUCCESS: " + JSON.stringify(response));
       })
-      .catch(error => console.log(error));
+      .catch(error => alert("ERROR: " + error));
 
+    if (didWork) {
+      ToastAndroid.showWithGravityAndOffset(
+        "Outcome Submitted!",
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
+      this.props.navigation.replace("Behaviors");
+    } else {
+      this.props.navigation.pop();
+    }
   }
 
   render() {
-    const selectedIntervention = this.props.navigation.getParam("data");
+    // The following items get data from the previous screen that were sent as parameters...
+    const params = this.props.navigation.state.params;
+    const interventionInfo = params.interventionInfo;
+    const interventionURL = params.interventionURL;
+    const behaviorURL = params.behaviorURL;
 
     return (
       <View style={Styles.view_mainView}>
         <Text style={styles.label}>Intervention Action</Text>
         <Card style={styles.card}>
           <Text style={{ fontSize: RFValue(18, 680), textAlign: "center" }}>
-            {selectedIntervention}
+            {interventionInfo}
           </Text>
+        </Card>
+        <Text style={styles.label}>Notes</Text>
+        <Card style={styles.card}>
+          <TextInput
+            style={styles.input}
+            autoCapitalize="none"
+            onChangeText={this.onNotesChange}
+          />
         </Card>
         <Text style={styles.label}>Did it Work?</Text>
         <Card style={styles.card}>
           <View style={{ paddingTop: 5, paddingBottom: 5 }}>
             <TouchableOpacity
-              onPress={() =>
-                // this.props.navigation.navigate("Behaviors")
-                this.postRequest()
-              }
+              onPress={() => this.setModalVisible(!this.state.modalVisible)}
             >
               <View
                 style={{
@@ -84,7 +131,7 @@ class OutcomeScreen extends React.Component {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.props.navigation.pop()}>
+            <TouchableOpacity onPress={() => this.postRequest(false)}>
               <View
                 style={{
                   ...styles.button_container,
@@ -98,6 +145,40 @@ class OutcomeScreen extends React.Component {
             </TouchableOpacity>
           </View>
         </Card>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+        >
+          <View style={styles.modalView}>
+            <View>
+              <Text
+                style={{ ...styles.label, color: "white", paddingBottom: 40 }}
+              >
+                Please Rate the outcome:
+              </Text>
+              <View style={{ paddingBottom: 20 }}>
+                <StarRating
+                  disabled={false}
+                  maxStars={5}
+                  starSize={30}
+                  fullStarColor={Colors.tertiary}
+                  emptyStarColor={Colors.primary}
+                  rating={this.state.rating}
+                  selectedStar={rating => this.onStarRatingPress(rating)}
+                />
+              </View>
+              <TouchableHighlight
+                onPress={() => {
+                  this.onRatingSubmit(behaviorURL, interventionURL);
+                }}
+              >
+                <Text style={styles.submitText}>Submit Rating</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -143,6 +224,27 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: "bold",
     fontSize: RFValue(20, 680)
+  },
+  modalView: {
+    marginTop: 150,
+    backgroundColor: "rgba(0,0,0,0.9)",
+    height: "50%",
+    justifyContent: "center"
+  },
+  modal: {
+    width: 200
+  },
+  submitText: {
+    alignSelf: "center",
+    paddingTop: 20,
+    paddingBottom: 20,
+    backgroundColor: Colors.tertiary,
+    color: Colors.primary,
+    fontSize: 24,
+    fontWeight: "bold",
+    width: 200,
+    textAlign: "center",
+    borderRadius: 10
   }
 });
 

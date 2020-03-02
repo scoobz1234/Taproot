@@ -24,14 +24,29 @@ class Interventions extends React.Component {
     };
   }
 
-  onInterventionPress(data) {
-    this.props.navigation.navigate("Outcomes", { data });
+  onInterventionPress(
+    interventionID,
+    interventionInfo,
+    interventionURL,
+    interventionName,
+    behaviorID,
+    behaviorName,
+    behaviorURL,
+    behaviorInfo
+  ) {
+    this.props.navigation.navigate("Outcomes", {
+      interventionID: interventionID,
+      interventionInfo: interventionInfo,
+      interventionURL: interventionURL,
+      interventionName: interventionName,
+      behaviorID: behaviorID,
+      behaviorName: behaviorName,
+      behaviorURL: behaviorURL,
+      behaviorInfo: behaviorInfo
+    });
   }
 
   render() {
-    // const { params } = this.props.navigation.state;
-    // const behaviorID = params ? params.behaviorID : null;
-
     if (this.state.isLoading) {
       return (
         <View style={styles.containerStyle}>
@@ -40,7 +55,6 @@ class Interventions extends React.Component {
       );
     } else {
       const behavior = this.props.navigation.state.params.data;
-      console.log(behavior);
       return (
         <ScrollView style={styles.screen}>
           {this.props.navigation.state.params.data.interventions.map(
@@ -48,10 +62,21 @@ class Interventions extends React.Component {
               return (
                 <TouchableOpacity
                   key={i}
-                  onPress={() => this.onInterventionPress(interventions.info)}
+                  onPress={() =>
+                    this.onInterventionPress(
+                      interventions.id,
+                      interventions.info,
+                      interventions.url,
+                      interventions.name,
+                      behavior.id,
+                      behavior.name,
+                      behavior.url,
+                      behavior.info
+                    )
+                  }
                 >
                   <View style={styles.list}>
-                    <Text style={styles.text}>{interventions.name} </Text>
+                    <Text style={styles.text}>{interventions.info} </Text>
                   </View>
                 </TouchableOpacity>
               );
