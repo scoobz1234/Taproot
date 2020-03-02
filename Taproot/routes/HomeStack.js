@@ -29,8 +29,8 @@ const defaultStackNavOptions = {
 // this is the long way to the interventions screen.
 const LoginRouteNavigator = createStackNavigator(
   {
-    Behaviors: Behaviors,
     Login: Login,
+    Behaviors: Behaviors,
     ResidentSelection: ResidentSelection,
     Resident: Resident,
     Interventions: Interventions,
