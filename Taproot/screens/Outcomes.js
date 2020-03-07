@@ -1,11 +1,9 @@
 import React from "react";
 import {
-  StyleSheet,
   View,
   TouchableOpacity,
   Text,
   TextInput,
-  Dimensions,
   Modal,
   TouchableHighlight,
   ScrollView,
@@ -15,7 +13,6 @@ import {
   TouchableWithoutFeedback
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { RFValue } from "react-native-responsive-fontsize";
 import Base64 from "base-64";
 import Axios from "axios";
 import StarRating from "react-native-star-rating";
@@ -104,26 +101,25 @@ class OutcomeScreen extends React.Component {
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView style={styles.view_mainView}>
-            <View style={Styles.view_mainView}>
-              <Text style={styles.label}>Intervention Action</Text>
-              <Card style={styles.card}>
-                <Text
-                  style={{ fontSize: RFValue(18, 680), textAlign: "center" }}
-                >
-                  {interventionInfo}
-                </Text>
+          <ScrollView style={Styles.outcomes_MainView}>
+            <View style={Styles.outcomes_CardView}>
+              <Text style={Styles.outcomes_Label}>Intervention Action</Text>
+              <Card style={Styles.outcomes_Card}>
+                <Text style={Styles.outcomes_CardText}>{interventionInfo}</Text>
               </Card>
-              <Text style={styles.label}>Notes</Text>
-              <Card style={styles.card}>
+              <Text style={Styles.outcomes_Label}>Notes</Text>
+              <Card style={Styles.outcomes_Card}>
                 <TextInput
-                  style={styles.input}
+                  style={Styles.input}
                   autoCapitalize="none"
+                  placeholder="Enter Your Notes Here!"
                   onChangeText={this.onNotesChange}
                 />
               </Card>
-              <Text style={styles.label}>Did it Work?</Text>
-              <Card style={styles.card}>
+              <Text style={Styles.outcomes_Label}>Did it Work?</Text>
+              <Card
+                style={{ ...Styles.outcomes_Card, backgroundColor: "white" }}
+              >
                 <View style={{ paddingTop: 5, paddingBottom: 5 }}>
                   <TouchableOpacity
                     onPress={() =>
@@ -132,23 +128,37 @@ class OutcomeScreen extends React.Component {
                   >
                     <View
                       style={{
-                        ...styles.button_container,
-                        backgroundColor: Colors.primary
+                        ...Styles.outcomes_ButtonContainer,
+                        backgroundColor: Colors.NAVY
                       }}
                     >
-                      <Text style={{ ...styles.text, color: Colors.tertiary }}>
+                      <Text
+                        style={{
+                          ...Styles.outcomes_ButtonText,
+                          color: Colors.GREEN
+                        }}
+                      >
                         Yes
                       </Text>
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.postRequest(behaviorURL, interventionURL, false)}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.postRequest(behaviorURL, interventionURL, false)
+                    }
+                  >
                     <View
                       style={{
-                        ...styles.button_container,
-                        backgroundColor: Colors.tertiary
+                        ...Styles.outcomes_ButtonContainer,
+                        backgroundColor: Colors.GREEN
                       }}
                     >
-                      <Text style={{ ...styles.text, color: Colors.primary }}>
+                      <Text
+                        style={{
+                          ...Styles.outcomes_ButtonText,
+                          color: Colors.NAVY
+                        }}
+                      >
                         No
                       </Text>
                     </View>
@@ -161,11 +171,11 @@ class OutcomeScreen extends React.Component {
                 transparent={true}
                 visible={this.state.modalVisible}
               >
-                <View style={styles.modalView}>
+                <View style={Styles.outcomes_Modal}>
                   <View>
                     <Text
                       style={{
-                        ...styles.label,
+                        ...Styles.outcomes_Label,
                         color: "white",
                         paddingBottom: 40
                       }}
@@ -177,8 +187,8 @@ class OutcomeScreen extends React.Component {
                         disabled={false}
                         maxStars={5}
                         starSize={30}
-                        fullStarColor={Colors.tertiary}
-                        emptyStarColor={Colors.primary}
+                        fullStarColor={Colors.GREEN}
+                        emptyStarColor={Colors.NAVY}
                         rating={this.state.rating}
                         selectedStar={rating => this.onStarRatingPress(rating)}
                       />
@@ -188,7 +198,9 @@ class OutcomeScreen extends React.Component {
                         this.onRatingSubmit(behaviorURL, interventionURL);
                       }}
                     >
-                      <Text style={styles.submitText}>Submit Rating</Text>
+                      <Text style={Styles.outcomes_SubmitText}>
+                        Submit Rating
+                      </Text>
                     </TouchableHighlight>
                   </View>
                 </View>
@@ -217,61 +229,5 @@ OutcomeScreen.navigationOptions = navData => {
     )
   };
 };
-
-const styles = StyleSheet.create({
-  view_mainView: {
-    flex: 1,
-    padding: 10
-  },
-  screen: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  card: {
-    width: Dimensions.get("screen").width,
-    maxWidth: "90%",
-    maxHeight: Dimensions.get("screen").height,
-    padding: 20,
-    marginBottom: 10
-  },
-  label: {
-    fontSize: RFValue(22, 680),
-    fontWeight: "bold",
-    alignSelf: "center"
-  },
-  button_container: {
-    borderRadius: 10,
-    height: Dimensions.get("screen").height * 0.06,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 2
-  },
-  text: {
-    fontWeight: "bold",
-    fontSize: RFValue(20, 680)
-  },
-  modalView: {
-    marginTop: 150,
-    backgroundColor: "rgba(0,0,0,0.9)",
-    height: "50%",
-    justifyContent: "center"
-  },
-  modal: {
-    width: 200
-  },
-  submitText: {
-    alignSelf: "center",
-    paddingTop: 20,
-    paddingBottom: 20,
-    backgroundColor: Colors.tertiary,
-    color: Colors.primary,
-    fontSize: 24,
-    fontWeight: "bold",
-    width: 200,
-    textAlign: "center",
-    borderRadius: 10
-  }
-});
 
 export default OutcomeScreen;

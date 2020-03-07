@@ -13,13 +13,13 @@ import ResidentSelection from "../screens/ResidentSelection";
 import Outcomes from "../screens/Outcomes";
 import Resident from "../screens/Resident";
 import Interventions from "../screens/Interventions";
-import Behaviors from "../screens/Behaviors";
 import Colors from "../constants/Colors";
 
 const defaultStackNavOptions = {
   defaultNavigationOptions: {
     headerStyle: {
-      backgroundColor: Platform.OS === "android" ? Colors.primary : Colors.primary
+      backgroundColor:
+        Platform.OS === "android" ? Colors.NAVY : Colors.NAVY
     },
     headerTintColor: Platform.OS === "android" ? "white" : "white"
   }
@@ -29,10 +29,9 @@ const defaultStackNavOptions = {
 // this is the long way to the interventions screen.
 const LoginRouteNavigator = createStackNavigator(
   {
+    Login: Login,
     ResidentSelection: ResidentSelection,
     Resident: Resident,
-    Login: Login,
-    Behaviors: Behaviors,
     Interventions: Interventions,
     Outcomes: Outcomes
   },
@@ -43,8 +42,9 @@ const LoginRouteNavigator = createStackNavigator(
 // route to the interventions screen...
 const DirectRouteNavigator = createStackNavigator(
   {
-    Interventions: Interventions,
-    Outcomes: Outcomes
+    Login: Login,
+    //Interventions: Interventions,
+    //Outcomes: Outcomes
   },
   defaultStackNavOptions
 );
@@ -60,7 +60,7 @@ const tabScreenConfiguration = {
           <Ionicons name="ios-log-in" size={25} color={tabInfo.tintColor} />
         );
       },
-      tabBarLabel: Platform.OS === "android" ? <Text>Main</Text> : "Main",
+      tabBarLabel: Platform.OS === "android" ? <Text>Main</Text> : "Main"
     }
   },
   Interventions: {
@@ -71,11 +71,7 @@ const tabScreenConfiguration = {
         return <Ionicons name="ios-send" size={25} color={tabInfo.tintColor} />;
       },
       tabBarLabel:
-        Platform.OS === "android" ? (
-          <Text>Interventions</Text>
-        ) : (
-          "Interventions"
-        )
+        Platform.OS === "android" ? <Text>Interventions</Text> : "Interventions"
     }
   }
 };
@@ -83,14 +79,15 @@ const tabScreenConfiguration = {
 const tabNavigator =
   Platform.OS === "android"
     ? createMaterialBottomTabNavigator(tabScreenConfiguration, {
-        activeTintColor: "white",
+        activeTintColor: Colors.NAVY,
+        inactiveBackgroundColor: Colors.NAVY,
         shifting: true
       })
     : createBottomTabNavigator(tabScreenConfiguration, {
         tabBarOptions: {
-          activeTintColor: Colors.tertiary,
-          inactiveBackgroundColor: 'white',
-          activeBackgroundColor: Colors.primary
+          activeTintColor: Colors.NAVY,
+          inactiveBackgroundColor: "white",
+          activeBackgroundColor: Colors.GREEN
         }
       });
 
@@ -105,7 +102,7 @@ const MainNavigator = createDrawerNavigator(
   },
   {
     contentOptions: {
-      activeTintColor: Colors.tertiary
+      activeTintColor: Colors.NAVY
     }
   }
 );

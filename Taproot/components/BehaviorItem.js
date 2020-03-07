@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   behaviorItem: {
     height: Dimensions.get('screen').height * .08,
     width: "100%",
-    backgroundColor: Colors.tertiary,
+    backgroundColor: Colors.GREEN,
     borderRadius: 10,
     overflow: "hidden",
     alignItems: 'center',

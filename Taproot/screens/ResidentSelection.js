@@ -1,22 +1,18 @@
 import React from "react";
 import {
   View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Text,
   FlatList,
   TextInput,
-  Dimensions,
   ActivityIndicator
 } from "react-native";
-import { RFValue } from "react-native-responsive-fontsize";
+
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import Axios from "axios";
 import Base64 from "base-64";
 
 import HeaderButton from "../components/HeaderButton";
 import ResidentItem from "../components/ResidentItem";
+import Styles from "../constants/Styles";
 
 class ResidentSelectionScreen extends React.Component {
   constructor(props) {
@@ -29,7 +25,7 @@ class ResidentSelectionScreen extends React.Component {
   }
 
   componentDidMount() {
-    const token = "tradmin:devpasstaproot";
+    const token = "trapp:tappass1";
     const hash = Base64.encode(token);
     const Basic = "Basic " + hash;
 
@@ -46,7 +42,7 @@ class ResidentSelectionScreen extends React.Component {
   render() {
     if (this.state.isLoading) {
       return (
-        <View style={styles.containerStyle}>
+        <View style={Styles.activityIndicator}>
           <ActivityIndicator />
         </View>
       );
@@ -61,9 +57,7 @@ class ResidentSelectionScreen extends React.Component {
             onSelectResident={() => {
               this.props.navigation.navigate({
                 routeName: "Resident",
-                params: {
-                  residentID: itemData.item.id
-                }
+                params: { residentID: itemData.item.id }
               });
             }}
           />
@@ -80,18 +74,19 @@ class ResidentSelectionScreen extends React.Component {
       displayedResidents.sort((a, b) => a.last_name > b.last_name);
 
       return (
-        <View style={styles.screen}>
-          <View style={styles.input_container}>
+        <View style={Styles.residentSelection_MainView}>
+          <View style={Styles.residentSelection_SearchBarContainer}>
             <TextInput
-              style={styles.input}
+              style={Styles.residentSelection_SearchBar}
               placeholder="Search"
               onChangeText={value =>
                 this.setState({ searchKey: value.toLocaleLowerCase() })
               }
             />
           </View>
-          <View style={styles.list_container}>
+          <View style={Styles.residentSelection_InterventionListContainer}>
             <FlatList
+              keyExtractor={(item, index) => index.toString()}
               data={displayedResidents}
               renderItem={renderResidentItem}
               style={{ width: "100%" }}
@@ -119,43 +114,5 @@ ResidentSelectionScreen.navigationOptions = navData => {
     )
   };
 };
-
-const styles = StyleSheet.create({
-  scrollView: {
-    paddingRight: 10,
-    paddingLeft: 10
-  },
-  screen: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  list: {
-    width: "100%"
-  },
-  input: {
-    justifyContent: "center",
-    width: "100%",
-    height: Dimensions.get("screen").height / 18,
-    marginLeft: 10,
-    borderRadius: 10,
-    fontSize: RFValue(26, 680)
-  },
-  input_container: {
-    width: "95%",
-    fontSize: RFValue(26, 680),
-    borderColor: "black",
-    borderWidth: 1,
-    marginTop: 20,
-    marginBottom: 10,
-    borderRadius: 10,
-    overflow: "hidden"
-  },
-  list_container: {
-    height: "90%",
-    width: "99%",
-    marginLeft: 5
-  }
-});
 
 export default ResidentSelectionScreen;

@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   residentItem: {
     justifyContent: 'flex-end',
     width: "97%",
-    backgroundColor: Colors.tertiary,
+    backgroundColor: Colors.GREEN,
     borderRadius: 10,
     overflow: "hidden",
     margin: 3
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   lbl: {
       fontSize: RFValue(26, 680),
       fontWeight: 'bold',
-      color: Colors.primary
+      color: Colors.NAVY
   },
   text: {
       fontSize: RFValue(22, 680),

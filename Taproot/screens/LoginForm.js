@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  StyleSheet,
   View,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
@@ -16,14 +15,13 @@ import {
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import Colors from "../constants/Colors";
 import Card from "../components/Card";
 import Styles from "../constants/Styles";
 import HeaderButton from "../components/HeaderButton";
-import Base64 from 'base-64';
+import Base64 from "base-64";
 import Axios from "axios";
 
-export default class LoginForm extends React.Component {
+class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,13 +41,8 @@ export default class LoginForm extends React.Component {
     this.setState({ screenWidth: screenWidth, screenHeight: screenHeight });
   };
 
-  onUsernameChange = username => {
-    this.setState({ username });
-  };
-
-  onPasswordChange = password => {
-    this.setState({ password });
-  };
+  onUsernameChange = username => this.setState({ username });
+  onPasswordChange = password => this.setState({ password });
 
   onPressLogin() {
     const { username, password } = this.state;
@@ -67,16 +60,16 @@ export default class LoginForm extends React.Component {
     //Spinner
     this.setState({ isLoading: true });
 
-    const token = username + ':' + password;
+    const token = username + ":" + password;
     const hash = Base64.encode(token);
-    const Basic = 'Basic ' + hash;
-    Axios.get('http://taproot-dev.azurewebsites.net/api/behaviors.json', {
+    const Basic = "Basic " + hash;
+    Axios.get("http://taproot-dev.azurewebsites.net/api/behaviors.json", {
       headers: {
-        'Authorization' : Basic
+        Authorization: Basic
       }
     })
-    .then(onSuccess)
-    .catch(onFailure);
+      .then(onSuccess)
+      .catch(onFailure);
   }
 
   render() {
@@ -91,36 +84,36 @@ export default class LoginForm extends React.Component {
           <Spinner visible={isLoading} />
           {!this.state.isAuthroized ? (
             <View>
-              <View style={styles.image}>
+              <View style={Styles.login_LogoContainer}>
                 <Image
-                  style={styles.logo}
+                  style={Styles.login_Logo}
                   source={require("../assets/Taproot_Logo_RGB.jpg")}
                 />
               </View>
               <KeyboardAvoidingView
                 behavior="padding"
                 keyboardVerticalOffset={10}
-                style={styles.screen}
+                style={Styles.login_MainView}
               >
-                <Card style={styles.card}>
+                <Card style={Styles.login_Card}>
                   <ScrollView>
-                    <Text style={styles.label}>Username</Text>
+                    <Text style={Styles.login_Label}>Username</Text>
                     <TextInput
-                      style={styles.input}
+                      style={Styles.login_TextInput}
                       autoCapitalize="none"
                       autoCorrect={false}
                       spellCheck={false}
                       returnKeyType="next"
                       textContentType="emailAddress"
-                      //onChangeText={text => this.setState({ username: text })}
+                      placeholder="trapp"
                       onChangeText={this.onUsernameChange}
                       onSubmitEditing={() => {
                         this.passwordInput.focus();
                       }}
                     />
-                    <Text style={styles.label}>Password</Text>
+                    <Text style={Styles.login_Label}>Password</Text>
                     <TextInput
-                      style={styles.input}
+                      style={Styles.login_TextInput}
                       autoCapitalize="none"
                       secureTextEntry={true}
                       returnKeyType="done"
@@ -133,10 +126,10 @@ export default class LoginForm extends React.Component {
                     />
                     <View style={{ paddingTop: 5, paddingBottom: 5 }}>
                       <TouchableOpacity
-                        style={styles.login_container}
+                        style={Styles.login_ButtonContainer}
                         onPress={this.onPressLogin.bind(this)}
                       >
-                        <Text style={styles.login_text}>Login</Text>
+                        <Text style={Styles.login_ButtonText}>Login</Text>
                       </TouchableOpacity>
                     </View>
                   </ScrollView>
@@ -171,44 +164,4 @@ LoginForm.navigationOptions = navData => {
   };
 };
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  logo: {
-    width: Dimensions.get("screen").width,
-    height: Dimensions.get("screen").height / 8
-  },
-  image: {
-    justifyContent: "flex-start",
-    alignItems: "flex-start"
-  },
-  label: {
-    color: "black",
-    marginBottom: 5
-  },
-  card: {
-    width: Dimensions.get("screen").width,
-    maxWidth: "90%",
-    padding: 20
-  },
-  input: {
-    borderBottomColor: "gray",
-    borderBottomWidth: 0.6,
-    marginBottom: 5
-  },
-  login_container: {
-    backgroundColor: Colors.tertiary,
-    borderRadius: 10,
-    height: Dimensions.get("screen").height / 16,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  login_text: {
-    color: Colors.primary,
-    fontWeight: "bold",
-    fontSize: 18
-  }
-});
+export default LoginForm;

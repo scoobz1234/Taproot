@@ -1,19 +1,16 @@
 import React from "react";
 import {
   View,
-  StyleSheet,
   Text,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
   ActivityIndicator
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { RFValue } from "react-native-responsive-fontsize";
 import Axios from "axios";
 import Base64 from "base-64";
 import HeaderButton from "../components/HeaderButton";
-import Colors from "../constants/Colors";
+import Styles from "../constants/Styles";
 
 class Interventions extends React.Component {
   constructor(props) {
@@ -22,7 +19,7 @@ class Interventions extends React.Component {
       isAuthorized: true,
       isLoading: true,
       dataSource: null,
-      behaviorID: null,
+      behaviorID: null
     };
   }
 
@@ -66,7 +63,7 @@ class Interventions extends React.Component {
   render() {
     if (this.state.isLoading) {
       return (
-        <View style={styles.containerStyle}>
+        <View style={Styles.activityIndicator}>
           <ActivityIndicator />
         </View>
       );
@@ -77,7 +74,7 @@ class Interventions extends React.Component {
         behavior => behavior.id === behaviorID
       );
       return (
-        <ScrollView style={styles.screen}>
+        <ScrollView style={Styles.interventions_MainView}>
           {selectedBehavior.interventions.map((interventions, i) => {
             return (
               <TouchableOpacity
@@ -95,8 +92,10 @@ class Interventions extends React.Component {
                   )
                 }
               >
-                <View style={styles.list}>
-                  <Text style={styles.text}>{interventions.info} </Text>
+                <View style={Styles.interventions_InterventionListContainer}>
+                  <Text style={Styles.interventions_InterventionListText}>
+                    {interventions.info}{" "}
+                  </Text>
                 </View>
               </TouchableOpacity>
             );
@@ -123,33 +122,5 @@ Interventions.navigationOptions = navData => {
     )
   };
 };
-
-const styles = StyleSheet.create({
-  screen: {
-    paddingRight: 10,
-    paddingLeft: 10
-  },
-  list: {
-    marginVertical: 5,
-    color: Colors.primary,
-    backgroundColor: Colors.tertiary,
-    borderColor: "black",
-    borderRadius: 10,
-    overflow: "hidden"
-  },
-  text: {
-    padding: 5,
-    fontSize: RFValue(18, 680),
-    fontWeight: "bold",
-    textAlign: "center",
-    color: Colors.primary
-  },
-  rating: {
-    width: Dimensions.get("screen").width * 0.35,
-    alignSelf: "flex-start",
-    paddingLeft: 10,
-    paddingBottom: 3
-  }
-});
 
 export default Interventions;

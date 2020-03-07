@@ -1,23 +1,18 @@
 import React from "react";
 import {
   View,
-  StyleSheet,
   Text,
   FlatList,
   Image,
-  ScrollView,
-  Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
 } from "react-native";
-
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import Axios from "axios";
 import Base64 from "base-64";
 import HeaderButton from "../components/HeaderButton";
-
-import Colors from "../constants/Colors";
 import BehaviorItem from "../components/BehaviorItem";
-import { RFValue } from "react-native-responsive-fontsize";
+import Styles from "../constants/Styles";
 
 class Patient extends React.Component {
   constructor(props) {
@@ -25,7 +20,8 @@ class Patient extends React.Component {
     this.state = {
       dataSource: null,
       behaviors: null,
-      isLoading: true
+      isLoading: true,
+      residentID: null
     };
   }
 
@@ -34,15 +30,19 @@ class Patient extends React.Component {
     const hash = Base64.encode(token);
     const Basic = "Basic " + hash;
 
+    //Gets the residents data from the api, headers are used for authorization
+    //utilize the three lines of code above for authorization.
     Axios.get("http://taproot-dev.azurewebsites.net/api/residents.json", {
       headers: { Authorization: Basic }
     })
+      //after we get/auth we take the response data and copy it to the response object
       .then(response => response.data)
       .then(data => {
-        this.setState({ dataSource: data });
+        this.setState({ dataSource: data }); // use the data to set the state dataSource
       })
       .catch(error => console.log(error));
 
+    //Gets the behavior data from the api
     Axios.get("http://taproot-dev.azurewebsites.net/api/behaviors.json", {
       headers: { Authorization: Basic }
     })
@@ -54,13 +54,16 @@ class Patient extends React.Component {
   }
 
   render() {
+    // if the state is loading, we display the activity indicator, else we display the page...
     if (this.state.isLoading) {
       return (
-        <View style={styles.containerStyle}>
+        <View style={Styles.activityIndicator}>
           <ActivityIndicator />
         </View>
       );
     } else {
+      //This is the object that handles rendering the data in the flatlist
+      //it returns a behavior item (component we built) which displays the data
       const renderBehaviorItem = itemData => {
         return (
           <BehaviorItem
@@ -78,57 +81,69 @@ class Patient extends React.Component {
         );
       };
 
+      // get the residentID from the previous pages params, and set it to residentID
       const residentID = this.props.navigation.getParam("residentID");
+
+      // next we take the dataSource (json object we got earlier) and we find the residentID and return that object
       const selectedResident = this.state.dataSource.find(
         resident => resident.id === residentID
       );
-
-      const selectedBehaviors = this.state.behaviors.filter(
-        behavior => behavior.info.includes(selectedResident.first_name + "_" + selectedResident.last_name)
-      )
+      // Then we get the selected behaviors from the json object we got earlier, and filter them by the first/last name of the resident
+      const selectedBehaviors = this.state.behaviors.filter(behavior =>
+        behavior.info.includes(
+          selectedResident.first_name + "_" + selectedResident.last_name
+        )
+      );
 
       return (
-        <View style={styles.screen}>
-          <View style={styles.top_container}>
-            <View style={styles.image_container}>
+        <View style={Styles.resident_MainView}>
+          <View style={Styles.resident_TopContainer}>
+            <View style={Styles.resident_ResidentProfilePictureContainer}>
+              {/* Image of resident will go here, placeholder for now */}
               <Image
-                style={styles.image}
+                style={Styles.resident_ResidentProfileImage}
                 source={require("../assets/Portrait_Placeholder.png")}
               />
             </View>
-            <View style={styles.demographic_container}>
-              <Text style={styles.label}>
+            <View style={Styles.resident_DemographicsContainer}>
+              <Text style={Styles.resident_Label}>
                 First:{" "}
-                <Text style={styles.label_text}>{selectedResident.first_name}</Text>
+                <Text style={Styles.resident_Text}>
+                  {/* Returns the selected resident's first name */}
+                  {selectedResident.first_name}{" "}
+                </Text>
               </Text>
-              <Text style={styles.label}>
+              <Text style={Styles.resident_Label}>
                 Last:{" "}
-                <Text style={styles.label_text}>{selectedResident.last_name}</Text>
+                <Text style={Styles.resident_Text}>
+                  {/* Returns the selected resident's last name */}
+                  {selectedResident.last_name}{" "}
+                </Text>
               </Text>
-              <Text style={styles.label}>
+              <Text style={Styles.resident_Label}>
                 D.O.B:{" "}
-                <Text style={styles.label_text}>{selectedResident.dob}</Text>
+                <Text style={Styles.resident_Text}>
+                  {/* Returns the selected resident's date of birth */}
+                  {selectedResident.dob}{" "}
+                </Text>
               </Text>
-              <Text style={styles.label}>
+              <Text style={Styles.resident_Label}>
                 Gender:{" "}
-                <Text style={styles.label_text}>{selectedResident.gender}</Text>
+                <Text style={Styles.resident_Text}>
+                  {/* Returns the selected resident's gender */}
+                  {selectedResident.gender}{" "}
+                </Text>
               </Text>
             </View>
           </View>
-          <View style={styles.bottom_container}>
-            <Text
-              style={{
-                fontSize: RFValue(25, 680),
-                fontWeight: "bold",
-                alignSelf: "center"
-              }}
-            >
-              Behaviors
-            </Text>
+          {/* This view contains the FlatList of behaviors */}
+          <View style={Styles.resident_BottomContainer}>
+            <Text style={Styles.resident_BehaviorsLabel}>Behaviors</Text>
             <FlatList
-              data={selectedBehaviors}
-              renderItem={renderBehaviorItem}
-              style={styles.list_behaviors}
+              keyExtractor={(item, index) => index.toString()}
+              data={selectedBehaviors} // FlatList contains the selected behaviors for the data
+              renderItem={renderBehaviorItem} //render using the renderbehavioritem method
+              style={Styles.resident_BehaviorsList} // set styles
             />
           </View>
         </View>
@@ -153,62 +168,5 @@ Patient.navigationOptions = navData => {
     )
   };
 };
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1
-  },
-  top_container: {
-    flexDirection: "row",
-    backgroundColor: Colors.tertiary
-  },
-  image_container: {
-    borderRadius: 10,
-    overflow: "hidden",
-    margin: 15
-  },
-  image: {
-    borderRadius: 30,
-    overflow: "hidden",
-    width: Dimensions.get("screen").width * 0.38,
-    height: Dimensions.get("screen").height * 0.18
-  },
-  demographic_container: {
-    marginTop: 20,
-    marginBottom: 20,
-    marginLeft: 10
-  },
-  label: {
-    fontSize: RFValue(20, 680),
-    fontWeight: "bold",
-    color: Colors.primary
-  },
-  label_text: {
-    fontSize: RFValue(18, 680),
-    color: "white"
-  },
-  diagnosis_text: {
-    fontSize: RFValue(16, 680),
-    color: "white",
-    marginLeft: 3
-  },
-  list_behaviors: {
-    width: "90%",
-    height: "64%",
-    borderColor: "black",
-    borderWidth: 1,
-    alignSelf: "center",
-    borderRadius: 10,
-    overflow: "hidden",
-    backgroundColor: Colors.primary
-  },
-  diagnosis_item: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 5,
-    margin: 1
-  }
-});
 
 export default Patient;
