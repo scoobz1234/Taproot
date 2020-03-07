@@ -6,103 +6,134 @@ import {
   FlatList,
   Image,
   ScrollView,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from "react-native";
 
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-
+import Axios from "axios";
+import Base64 from "base-64";
 import HeaderButton from "../components/HeaderButton";
 
 import Colors from "../constants/Colors";
-import { BEHAVIORS, RESIDENTS } from "../data/dummy_data";
 import BehaviorItem from "../components/BehaviorItem";
 import { RFValue } from "react-native-responsive-fontsize";
 
 class Patient extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      dataSource: null,
+      behaviors: null,
+      isLoading: true
+    };
+  }
+
+  componentDidMount() {
+    const token = "tradmin:devpasstaproot";
+    const hash = Base64.encode(token);
+    const Basic = "Basic " + hash;
+
+    Axios.get("http://taproot-dev.azurewebsites.net/api/residents.json", {
+      headers: { Authorization: Basic }
+    })
+      .then(response => response.data)
+      .then(data => {
+        this.setState({ dataSource: data });
+      })
+      .catch(error => console.log(error));
+
+    Axios.get("http://taproot-dev.azurewebsites.net/api/behaviors.json", {
+      headers: { Authorization: Basic }
+    })
+      .then(response => response.data)
+      .then(data => {
+        this.setState({ isLoading: false, behaviors: data });
+      })
+      .catch(error => console.log(error));
   }
 
   render() {
-    const residentID = this.props.navigation.getParam("residentID");
-    const selectedResident = RESIDENTS.find(
-      resident => resident.id === residentID
-    );
-
-    const renderBehaviorItem = itemData => {
+    if (this.state.isLoading) {
       return (
-        <BehaviorItem
-          id={itemData.item.id}
-          name={itemData.item.name}
-          onSelectBehavior={() => {
-            this.props.navigation.navigate({
-              routeName: "Interventions",
-              params: {
-                BehaviorID: itemData.item.id
-              }
-            });
-          }}
-        />
+        <View style={styles.containerStyle}>
+          <ActivityIndicator />
+        </View>
       );
-    };
+    } else {
+      const renderBehaviorItem = itemData => {
+        return (
+          <BehaviorItem
+            id={itemData.item.id}
+            name={itemData.item.name}
+            onSelectBehavior={() => {
+              this.props.navigation.navigate({
+                routeName: "Interventions",
+                params: {
+                  behaviorID: itemData.item.id
+                }
+              });
+            }}
+          />
+        );
+      };
 
-    return (
-      <View style={styles.screen}>
-        <View style={styles.top_container}>
-          <View style={styles.image_container}>
-            <Image
-              style={styles.image}
-              source={require("../assets/Portrait_Placeholder.png")}
-            />
-          </View>
-          <View style={styles.demographic_container}>
-            <Text style={styles.label}>
-              Name:{" "}
-              <Text style={styles.label_text}>{selectedResident.name}</Text>
-            </Text>
-            <Text style={styles.label}>
-              D.O.B:{" "}
-              <Text style={styles.label_text}>{selectedResident.dob}</Text>
-            </Text>
-            <Text style={styles.label}>
-              Gender:{" "}
-              <Text style={styles.label_text}>{selectedResident.gender}</Text>
-            </Text>
-            <Text style={styles.label}>Diagnosis: </Text>
-            <View
-              style={{
-                height: Dimensions.get("screen").height * 0.04,
-                width: Dimensions.get("screen").width * 0.5
-              }}
-            >
-              <ScrollView horizontal={true} scrollEventThrottle={16}>
-                {selectedResident.diagnosis.map((item, key) => (
-                  <View key={key} style={styles.diagnosis_item}>
-                    <Text style={styles.diagnosis_text}>{item},</Text>
-                  </View>
-                ))}
-              </ScrollView>
+      const residentID = this.props.navigation.getParam("residentID");
+      const selectedResident = this.state.dataSource.find(
+        resident => resident.id === residentID
+      );
+
+      const selectedBehaviors = this.state.behaviors.filter(
+        behavior => behavior.info.includes(selectedResident.first_name + "_" + selectedResident.last_name)
+      )
+
+      return (
+        <View style={styles.screen}>
+          <View style={styles.top_container}>
+            <View style={styles.image_container}>
+              <Image
+                style={styles.image}
+                source={require("../assets/Portrait_Placeholder.png")}
+              />
+            </View>
+            <View style={styles.demographic_container}>
+              <Text style={styles.label}>
+                First:{" "}
+                <Text style={styles.label_text}>{selectedResident.first_name}</Text>
+              </Text>
+              <Text style={styles.label}>
+                Last:{" "}
+                <Text style={styles.label_text}>{selectedResident.last_name}</Text>
+              </Text>
+              <Text style={styles.label}>
+                D.O.B:{" "}
+                <Text style={styles.label_text}>{selectedResident.dob}</Text>
+              </Text>
+              <Text style={styles.label}>
+                Gender:{" "}
+                <Text style={styles.label_text}>{selectedResident.gender}</Text>
+              </Text>
             </View>
           </View>
+          <View style={styles.bottom_container}>
+            <Text
+              style={{
+                fontSize: RFValue(25, 680),
+                fontWeight: "bold",
+                alignSelf: "center"
+              }}
+            >
+              Behaviors
+            </Text>
+            <FlatList
+              data={selectedBehaviors}
+              renderItem={renderBehaviorItem}
+              style={styles.list_behaviors}
+            />
+          </View>
         </View>
-        <View style={styles.bottom_container}>
-          <Text
-            style={{
-              fontSize: RFValue(25, 680),
-              fontWeight: "bold",
-              alignSelf: "center"
-            }}
-          >
-            Behaviors
-          </Text>
-          <FlatList
-            data={BEHAVIORS}
-            renderItem={renderBehaviorItem}
-            style={styles.list_behaviors}
-          />
-        </View>
-      </View>
-    );
+      );
+    }
   }
 }
 

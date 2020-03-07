@@ -10,7 +10,8 @@ import {
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { RFValue } from "react-native-responsive-fontsize";
-
+import Axios from "axios";
+import Base64 from "base-64";
 import HeaderButton from "../components/HeaderButton";
 import Colors from "../constants/Colors";
 
@@ -19,9 +20,25 @@ class Interventions extends React.Component {
     super(props);
     this.state = {
       isAuthorized: true,
-      isLoading: false,
-      dataSource: null
+      isLoading: true,
+      dataSource: null,
+      behaviorID: null,
     };
+  }
+
+  componentDidMount() {
+    const token = "tradmin:devpasstaproot";
+    const hash = Base64.encode(token);
+    const Basic = "Basic " + hash;
+
+    Axios.get("http://taproot-dev.azurewebsites.net/api/behaviors.json", {
+      headers: { Authorization: Basic }
+    })
+      .then(response => response.data)
+      .then(data => {
+        this.setState({ isLoading: false, dataSource: data });
+      })
+      .catch(error => console.log(error));
   }
 
   onInterventionPress(
@@ -54,34 +71,36 @@ class Interventions extends React.Component {
         </View>
       );
     } else {
-      const behavior = this.props.navigation.state.params.data;
+      const behaviorID = this.props.navigation.getParam("behaviorID");
+
+      const selectedBehavior = this.state.dataSource.find(
+        behavior => behavior.id === behaviorID
+      );
       return (
         <ScrollView style={styles.screen}>
-          {this.props.navigation.state.params.data.interventions.map(
-            (interventions, i) => {
-              return (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() =>
-                    this.onInterventionPress(
-                      interventions.id,
-                      interventions.info,
-                      interventions.url,
-                      interventions.name,
-                      behavior.id,
-                      behavior.name,
-                      behavior.url,
-                      behavior.info
-                    )
-                  }
-                >
-                  <View style={styles.list}>
-                    <Text style={styles.text}>{interventions.info} </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            }
-          )}
+          {selectedBehavior.interventions.map((interventions, i) => {
+            return (
+              <TouchableOpacity
+                key={i}
+                onPress={() =>
+                  this.onInterventionPress(
+                    interventions.id,
+                    interventions.info,
+                    interventions.url,
+                    interventions.name,
+                    selectedBehavior.id,
+                    selectedBehavior.name,
+                    selectedBehavior.url,
+                    selectedBehavior.info
+                  )
+                }
+              >
+                <View style={styles.list}>
+                  <Text style={styles.text}>{interventions.info} </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       );
     }

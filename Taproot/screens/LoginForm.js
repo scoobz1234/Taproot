@@ -56,7 +56,7 @@ export default class LoginForm extends React.Component {
 
     const onSuccess = () => {
       this.setState({ isLoading: false, isAuthorized: true });
-      this.props.navigation.replace("Behaviors");
+      this.props.navigation.replace("ResidentSelection");
     };
 
     const onFailure = error => {

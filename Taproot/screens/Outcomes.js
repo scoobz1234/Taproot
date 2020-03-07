@@ -8,8 +8,11 @@ import {
   Dimensions,
   Modal,
   TouchableHighlight,
-  Alert,
-  ToastAndroid
+  ScrollView,
+  ToastAndroid,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { RFValue } from "react-native-responsive-fontsize";
@@ -85,9 +88,9 @@ class OutcomeScreen extends React.Component {
         25,
         50
       );
-      this.props.navigation.replace("Behaviors");
+      this.props.navigation.replace("ResidentSelection");
     } else {
-      this.props.navigation.pop();
+      this.props.navigation.replace("ResidentSelection");
     }
   }
 
@@ -99,87 +102,101 @@ class OutcomeScreen extends React.Component {
     const behaviorURL = params.behaviorURL;
 
     return (
-      <View style={Styles.view_mainView}>
-        <Text style={styles.label}>Intervention Action</Text>
-        <Card style={styles.card}>
-          <Text style={{ fontSize: RFValue(18, 680), textAlign: "center" }}>
-            {interventionInfo}
-          </Text>
-        </Card>
-        <Text style={styles.label}>Notes</Text>
-        <Card style={styles.card}>
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            onChangeText={this.onNotesChange}
-          />
-        </Card>
-        <Text style={styles.label}>Did it Work?</Text>
-        <Card style={styles.card}>
-          <View style={{ paddingTop: 5, paddingBottom: 5 }}>
-            <TouchableOpacity
-              onPress={() => this.setModalVisible(!this.state.modalVisible)}
-            >
-              <View
-                style={{
-                  ...styles.button_container,
-                  backgroundColor: Colors.primary
-                }}
-              >
-                <Text style={{ ...styles.text, color: Colors.tertiary }}>
-                  Yes
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView style={styles.view_mainView}>
+            <View style={Styles.view_mainView}>
+              <Text style={styles.label}>Intervention Action</Text>
+              <Card style={styles.card}>
+                <Text
+                  style={{ fontSize: RFValue(18, 680), textAlign: "center" }}
+                >
+                  {interventionInfo}
                 </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.postRequest(false)}>
-              <View
-                style={{
-                  ...styles.button_container,
-                  backgroundColor: Colors.tertiary
-                }}
-              >
-                <Text style={{ ...styles.text, color: Colors.primary }}>
-                  No
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Card>
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-        >
-          <View style={styles.modalView}>
-            <View>
-              <Text
-                style={{ ...styles.label, color: "white", paddingBottom: 40 }}
-              >
-                Please Rate the outcome:
-              </Text>
-              <View style={{ paddingBottom: 20 }}>
-                <StarRating
-                  disabled={false}
-                  maxStars={5}
-                  starSize={30}
-                  fullStarColor={Colors.tertiary}
-                  emptyStarColor={Colors.primary}
-                  rating={this.state.rating}
-                  selectedStar={rating => this.onStarRatingPress(rating)}
+              </Card>
+              <Text style={styles.label}>Notes</Text>
+              <Card style={styles.card}>
+                <TextInput
+                  style={styles.input}
+                  autoCapitalize="none"
+                  onChangeText={this.onNotesChange}
                 />
-              </View>
-              <TouchableHighlight
-                onPress={() => {
-                  this.onRatingSubmit(behaviorURL, interventionURL);
-                }}
+              </Card>
+              <Text style={styles.label}>Did it Work?</Text>
+              <Card style={styles.card}>
+                <View style={{ paddingTop: 5, paddingBottom: 5 }}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.setModalVisible(!this.state.modalVisible)
+                    }
+                  >
+                    <View
+                      style={{
+                        ...styles.button_container,
+                        backgroundColor: Colors.primary
+                      }}
+                    >
+                      <Text style={{ ...styles.text, color: Colors.tertiary }}>
+                        Yes
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.postRequest(behaviorURL, interventionURL, false)}>
+                    <View
+                      style={{
+                        ...styles.button_container,
+                        backgroundColor: Colors.tertiary
+                      }}
+                    >
+                      <Text style={{ ...styles.text, color: Colors.primary }}>
+                        No
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </Card>
+
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={this.state.modalVisible}
               >
-                <Text style={styles.submitText}>Submit Rating</Text>
-              </TouchableHighlight>
+                <View style={styles.modalView}>
+                  <View>
+                    <Text
+                      style={{
+                        ...styles.label,
+                        color: "white",
+                        paddingBottom: 40
+                      }}
+                    >
+                      Please Rate the outcome:
+                    </Text>
+                    <View style={{ paddingBottom: 20 }}>
+                      <StarRating
+                        disabled={false}
+                        maxStars={5}
+                        starSize={30}
+                        fullStarColor={Colors.tertiary}
+                        emptyStarColor={Colors.primary}
+                        rating={this.state.rating}
+                        selectedStar={rating => this.onStarRatingPress(rating)}
+                      />
+                    </View>
+                    <TouchableHighlight
+                      onPress={() => {
+                        this.onRatingSubmit(behaviorURL, interventionURL);
+                      }}
+                    >
+                      <Text style={styles.submitText}>Submit Rating</Text>
+                    </TouchableHighlight>
+                  </View>
+                </View>
+              </Modal>
             </View>
-          </View>
-        </Modal>
-      </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -202,6 +219,15 @@ OutcomeScreen.navigationOptions = navData => {
 };
 
 const styles = StyleSheet.create({
+  view_mainView: {
+    flex: 1,
+    padding: 10
+  },
+  screen: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
   card: {
     width: Dimensions.get("screen").width,
     maxWidth: "90%",

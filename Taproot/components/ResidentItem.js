@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from "react-native";
-import { RFValue} from "react-native-responsive-fontsize";
+import { RFValue } from "react-native-responsive-fontsize";
 import Colors from "../constants/Colors";
 
 const ResidentItem = props => {
@@ -15,8 +15,8 @@ const ResidentItem = props => {
             />
           </View>
           <View style={{marginTop:5}}>
-            <Text style={styles.lbl}>Name: <Text style={styles.text}>{props.name}</Text></Text>
-            <Text style={styles.lbl}>ID: <Text style={styles.text}>{props.id}</Text></Text>
+            <Text style={styles.lbl}>Last: <Text style={styles.text}>{props.last_name}</Text></Text>
+            <Text style={styles.lbl}>First: <Text style={styles.text}>{props.first_name}</Text></Text>
             <Text style={styles.lbl}>Facility: <Text style={styles.text}>{props.facility}</Text></Text>
           </View>
         </View>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
       color: Colors.primary
   },
   text: {
-      fontSize: RFValue(24, 680),
+      fontSize: RFValue(22, 680),
       color: 'white'
   }
 });
