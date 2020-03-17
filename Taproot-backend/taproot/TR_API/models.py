@@ -24,8 +24,7 @@ from django.contrib.auth.models import User
 
 class Behavior(models.Model):
     name = models.CharField(max_length=50)
-    info = models.TextField(null=True)
-    interventions = models.ManyToManyField('Intervention')
+    info = models.TextField(null=True, blank=True)
 
     def __eq__(self, other):
         return self.pk == other
@@ -82,8 +81,8 @@ class Caregiver(models.Model):
 
 
 class Encounter(models.Model):
-    resident = models.ForeignKey('Resident', on_delete=models.PROTECT, null=True)
-    caregiver = models.ForeignKey(User, on_delete=models.PROTECT)
+    resident = models.ForeignKey('Resident', on_delete=models.PROTECT, null=True, blank=True)
+    caregiver = models.ForeignKey('Caregiver', on_delete=models.PROTECT)
     behavior = models.ForeignKey('Behavior', on_delete=models.PROTECT)
     intervention = models.ForeignKey('Intervention', on_delete=models.PROTECT)
     date = models.DateTimeField(auto_now_add=True)
@@ -113,7 +112,7 @@ class Encounter(models.Model):
 class Facility(models.Model):
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=50)
-    address_ext = models.CharField(max_length=50)
+    address_ext = models.CharField(max_length=50, null=True, blank=True)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     zipcode = models.IntegerField()
@@ -214,7 +213,8 @@ class Resident(models.Model):   # TODO
         ('F', 'Female'),
     ]
 
-    facility = models.ForeignKey('Facility', on_delete=models.PROTECT)  # TODO: behavior, privacy
+    facility = models.ForeignKey('Facility', on_delete=models.SET_NULL)  # TODO: behavior, privacy
+    behaviors = models.ManyToManyField('ResidentBehavior')
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     dob = models.DateField()
@@ -238,3 +238,27 @@ class Resident(models.Model):   # TODO
 
     class Meta:
         db_table = "TBL_RESIDENT"
+
+
+class ResidentBehavior(models.Model):
+    resident_id = models.ForeignKey('Resident', on_delete=models.SET_NULL)
+    behavior = models.ForeignKey('Behavior', on_delete=models.SET_NULL)
+    interventions = models.ManyToManyField('Intervention')
+
+    def __eq__(self, other):
+        return self.pk == other
+
+    def __ne__(self, other):
+        return self.pk != other
+
+    def __gt__(self, other):
+        return self.pk > other
+
+    def __lt__(self, other):
+        return self.pk < other
+
+    def __hash__(self):
+        return hash(self.pk)
+
+    class Meta:
+        db_table = "TBL_RESIDENT_BEHAVIOR"
