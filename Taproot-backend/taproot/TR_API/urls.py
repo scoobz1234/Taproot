@@ -9,8 +9,11 @@ router = routers.DefaultRouter()
 router.register(r'behaviors', views.BehaviorViewSet)
 router.register(r'caregivers', views.CaregiverViewSet)
 router.register(r'encounters', views.EncounterViewSet)
+router.register(r'new-encounter', views.EncounterUploadViewSet)
 router.register(r'facilities', views.FacilityViewSet)
 router.register(r'interventions', views.InterventionViewSet)
+router.register(r'residents', views.ResidentViewSet)
+router.register(r'resident-behaviors', views.ResidentBehaviorViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -24,27 +24,27 @@ from .models import Intervention
 class InterventionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Intervention
-        fields = ['id', 'name', 'info']
+        fields = ['id', 'url', 'name', 'info']
 
 
 class BehaviorSerializer(serializers.HyperlinkedModelSerializer):
     interventions = InterventionSerializer(many=True, read_only=True)
     class Meta:
         model = Behavior
-        fields = ['id', 'name', 'info', 'interventions']
+        fields = ['id', 'url', 'name', 'info']
 
 
 class FacilitySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Facility
-        fields = ['id', 'name', 'city', 'state', 'phone']
+        fields = ['id', 'url', 'name', 'city', 'state', 'phone']
 
 
 class CaregiverSerializer(serializers.HyperlinkedModelSerializer):
     facility = FacilitySerializer(many=True, read_only=True)
     class Meta:
         model = Caregiver
-        fields = ['id', 'first_name', 'last_name', 'dob', 'email', 'phone', 'active', 'facility']
+        fields = ['id', 'url', 'first_name', 'last_name', 'dob', 'email', 'phone', 'active', 'facility']
 
 
 class EncounterSerializer(serializers.HyperlinkedModelSerializer):
@@ -55,3 +55,26 @@ class EncounterSerializer(serializers.HyperlinkedModelSerializer):
         model = Encounter
         fields = ['id', 'caregiver', 'resident', 'behavior', 'intervention', 'date',
                   'outcome', 'behavior_rating', 'notes']
+
+
+class EncounterUploadSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Encounter
+        fields = ['id', 'caregiver', 'behavior', 'intervention',
+                  'outcome', 'behavior_rating', 'notes']
+
+
+class ResidentBehaviorSerializer(serializers.HyperlinkedModelSerializer):
+    behavior = BehaviorSerializer()
+    interventions = InterventionSerializer()
+    class Meta:
+        model = ResidentBehavior
+        fields = ['id', 'url', 'resident_id', 'behavior', 'interventions']
+
+
+class ResidentSerializer(serializers.HyperlinkedModelSerializer):
+    behaviors = ResidentBehaviorSerializer()
+    class Meta:
+        model = Resident
+        fields = ['id', 'url', 'first_name', 'last_name', 'behaviors',
+                  'gender', 'dob', 'facility']
