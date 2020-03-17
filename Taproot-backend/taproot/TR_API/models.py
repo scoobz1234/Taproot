@@ -88,7 +88,7 @@ class Encounter(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     outcome = models.BooleanField() # TODO: pass/fail? or need a third option?
     behavior_rating = models.IntegerField()
-    notes = models.TextField()
+    notes = models.TextField(blank=True, null=True)
 
     def __eq__(self, other):
         return self.pk == other
