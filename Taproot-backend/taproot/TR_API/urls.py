@@ -4,13 +4,9 @@ from TR_API import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-# router.register(r'users', views.UserViewSet)
-# router.register(r'groups', views.GroupViewSet)
-router.register(r'behaviors', views.BehaviorViewSet)
+router.register(r'residents', views.ResidentViewSet)
 router.register(r'caregivers', views.CaregiverViewSet)
-router.register(r'encounters', views.EncounterViewSet)
-router.register(r'facilities', views.FacilityViewSet)
-router.register(r'interventions', views.InterventionViewSet)
+router.register(r'demographics', views.DemographicViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
