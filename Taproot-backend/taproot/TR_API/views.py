@@ -6,7 +6,6 @@ from .serializers import CaregiverSerializer
 from .serializers import DemographicSerializer
 from .models import Resident, Caregiver, Demographic
 
-
 class ResidentViewSet(viewsets.ModelViewSet):
     queryset = Resident.objects.all()
     serializer_class = ResidentSerializer
