@@ -291,7 +291,8 @@ class Medications(models.Model):
     frequency = models.CharField(max_length=128)
     administration = models.CharField(max_length=512)
     prns_given_last_month = models.CharField(max_length=512)
-    is_medication_discounted = models.CharField(max_length=1, choices=choice, default=0) #TODO fix this to discontinued...
+    is_medication_discounted = models.CharField(max_length=1, choices=choice, default=0) 
+    #TODO fix this to discontinued...
     #TODO list for administration prn routine...
     def __str__(self):
         return self.medication_name + ', ' + self.resident.last_name
@@ -373,3 +374,22 @@ class Vision_Diagnoses(models.Model):
         db_table = "vision_diagnoses" 
         verbose_name = 'Vision Diagnoses'
         verbose_name_plural = 'Vision Diagnoses' 
+
+
+#TODO add the rest of the background questions...
+
+
+# KEEP THIS AS TEMPLATE
+        # Intervention Name: redirect_hobby
+        # Intervention Action: redirect RESIDENT_NAME with FAVORITE_HOBBY
+        # Intervention select detail: HOBBY
+
+        # DETAIL:
+
+        # Redirect Annegritt with arts and crafts
+
+
+#TODO calculate age from DOB (today-dob)
+
+
+#TODO switch green to blue blue to green on app
