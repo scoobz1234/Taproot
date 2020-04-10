@@ -1,7 +1,8 @@
+""" URLS for taproot """
 from django.urls import path
 from django.urls import include
-from TR_API import views
 from rest_framework import routers
+from TR_API import views
 
 router = routers.DefaultRouter()
 router.register(r'residents', views.ResidentViewSet)

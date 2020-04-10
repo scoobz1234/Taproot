@@ -10,7 +10,7 @@
 
     // Spouse Field //
     var hasSpouse = $("#id_demographic_set-0-has_spouse");
-    var spouseName = $('#id_demographic_set-0-spouse_name, label[for="id_demographic_set-0-spouse_name');
+    var spouseName = $('#id_demographic_set-0-spouse_name, label[for="id_demographic_set-0-spouse_name"]');
 
     toggle(hasSpouse.val(), spouseName); //pre-set fields to match default..
 
