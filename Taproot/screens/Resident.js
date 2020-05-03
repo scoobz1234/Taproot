@@ -1,18 +1,14 @@
+// Created by Stephen R. Ouellette, 2020 
+// Student University of Advancing Technology
 import React from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  ActivityIndicator,
-  AsyncStorage
-} from "react-native";
+import { View, Text, FlatList, Image, ActivityIndicator } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import Axios from "axios";
-import Base64 from "base-64";
 import HeaderButton from "../components/HeaderButton";
 import BehaviorItem from "../components/BehaviorItem";
 import Styles from "../constants/Styles";
+import * as SQLite from 'expo-sqlite';
+
+const db = SQLite.openDatabase('taprootDB.db');
 
 class Patient extends React.Component {
   constructor(props) {
@@ -21,37 +17,51 @@ class Patient extends React.Component {
       dataSource: null,
       behaviors: null,
       isLoading: true,
-      residentID: null
+      residentID: this.props.navigation.getParam("residentID")
     };
   }
 
-  componentDidMount() {
-    const token = "tradmin:devpasstaproot";
-    const hash = Base64.encode(token);
-    const Basic = "Basic " + hash;
-
-    //Gets the residents data from the api, headers are used for authorization
-    //utilize the three lines of code above for authorization.
-    Axios.get("http://taproot-dev.azurewebsites.net/api/residents.json", {
-      headers: { Authorization: Basic }
-    })
-      //after we get/auth we take the response data and copy it to the response object
-      .then(response => response.data)
-      .then(data => {
-        this.setState({ dataSource: data }); // use the data to set the state dataSource
-      })
-      .catch(error => console.log(error));
-
-    //Gets the behavior data from the api
-    Axios.get("http://taproot-dev.azurewebsites.net/api/behaviors.json", {
-      headers: { Authorization: Basic }
-    })
-      .then(response => response.data)
-      .then(data => {
-        this.setState({ isLoading: false, behaviors: data });
-      })
-      .catch(error => console.log(error));
+  componentDidMount() { 
+    this.getResident();
+    this.getBehaviors();
   }
+
+  getResident(){
+    // database.transaction(callback,error,success);
+    // console.log('Getting resident:',this.state.residentID);
+    db.transaction(tx => {
+      tx.executeSql(
+        // SQL Statement string
+        "SELECT * FROM tbl_residents WHERE id LIKE '%" + this.state.residentID + "%'",
+        // parameters (these pertain to ? you might put into the SQL statement string)
+        [],
+        // Callback Success Function
+        (_, { rows }) => {this.setState({dataSource: rows._array});},
+        // Callback Error Function
+        (t, error) => {console.log('Get Behaviors Callback Error:',error);});}, 
+      // Transaction Error Function
+      (t, error) => { console.log('Get Behaviors Transaction Failure:',error);},);
+  }
+
+  getBehaviors(){
+    // database.transaction(callback,error,success);
+    // console.log('Getting Behaviors for:',this.state.residentID);
+    db.transaction(tx => {
+      tx.executeSql(
+        // SQL Statement string
+        "SELECT * FROM tbl_behaviors AS b INNER JOIN tbl_reactive_behaviors AS rb ON b.id = rb.id WHERE rb.resident LIKE '%" + this.state.residentID + "%'",
+        // parameters (these pertain to ? you might put into the SQL statement string)
+        [],
+        // Callback Success Function
+        (_, { rows }) => {
+          console.log(rows);
+          this.setState({behaviors: rows._array}); 
+          this.setState({isLoading: false});},
+        // Callback Error Function
+        (t, error) => {console.log('Get Behaviors Callback Error:',error);});}, 
+      // Transaction Error Function
+      (t, error) => { console.log('Get Behaviors Transaction Failure:',error);},);
+}
 
   render() {
     // if the state is loading, we display the activity indicator, else we display the page...
@@ -73,27 +83,15 @@ class Patient extends React.Component {
               this.props.navigation.navigate({
                 routeName: "Interventions",
                 params: {
-                  behaviorID: itemData.item.id
+                  behaviorID: itemData.item.behavior,
+                  residentID: this.state.residentID,
+                  authToken: this.props.navigation.getParam('authToken')
                 }
               });
             }}
           />
         );
       };
-
-      // get the residentID from the previous pages params, and set it to residentID
-      const residentID = this.props.navigation.getParam("residentID");
-
-      // next we take the dataSource (json object we got earlier) and we find the residentID and return that object
-      const selectedResident = this.state.dataSource.find(
-        resident => resident.id === residentID
-      );
-      // Then we get the selected behaviors from the json object we got earlier, and filter them by the first/last name of the resident
-      const selectedBehaviors = this.state.behaviors.filter(behavior =>
-        behavior.info.includes(
-          selectedResident.first_name + "_" + selectedResident.last_name
-        )
-      );
 
       return (
         <View style={Styles.resident_MainView}>
@@ -110,28 +108,28 @@ class Patient extends React.Component {
                 First:{" "}
                 <Text style={Styles.resident_Text}>
                   {/* Returns the selected resident's first name */}
-                  {selectedResident.first_name}{" "}
+                  {this.state.dataSource[0].first_name}{" "}
                 </Text>
               </Text>
               <Text style={Styles.resident_Label}>
                 Last:{" "}
                 <Text style={Styles.resident_Text}>
                   {/* Returns the selected resident's last name */}
-                  {selectedResident.last_name}{" "}
+                  {this.state.dataSource[0].last_name}{" "}
                 </Text>
               </Text>
               <Text style={Styles.resident_Label}>
                 D.O.B:{" "}
                 <Text style={Styles.resident_Text}>
                   {/* Returns the selected resident's date of birth */}
-                  {selectedResident.dob}{" "}
+                  {this.state.dataSource[0].date_of_birth}{" "}
                 </Text>
               </Text>
               <Text style={Styles.resident_Label}>
                 Gender:{" "}
                 <Text style={Styles.resident_Text}>
                   {/* Returns the selected resident's gender */}
-                  {selectedResident.gender}{" "}
+                  {this.state.dataSource[0].gender}{" "}
                 </Text>
               </Text>
             </View>
@@ -141,7 +139,7 @@ class Patient extends React.Component {
             <Text style={Styles.resident_BehaviorsLabel}>Behaviors</Text>
             <FlatList
               keyExtractor={(item, index) => index.toString()}
-              data={selectedBehaviors} // FlatList contains the selected behaviors for the data
+              data={this.state.behaviors} // FlatList contains the selected behaviors for the data
               renderItem={renderBehaviorItem} //render using the renderbehavioritem method
               style={Styles.resident_BehaviorsList} // set styles
             />

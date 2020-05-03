@@ -1,42 +1,55 @@
+// Created by Stephen R. Ouellette, 2020 
+// Student University of Advancing Technology
+
 import React from "react";
-import {
-  View,
-  FlatList,
-  TextInput,
-  ActivityIndicator
-} from "react-native";
-
+import { View, FlatList, TextInput, ActivityIndicator } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import Axios from "axios";
-import Base64 from "base-64";
-
 import HeaderButton from "../components/HeaderButton";
 import ResidentItem from "../components/ResidentItem";
 import Styles from "../constants/Styles";
+import * as SQLite from 'expo-sqlite';
+import getData from '../constants/Database';
+const db = SQLite.openDatabase('taprootDB.db'); // Open the database //
 
 class ResidentSelectionScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchKey: "",
-      dataSource: null,
-      isLoading: true
+      search: "", // Holds the search term //
+      isLoading: true, // Flag for loading checked //
+      data: [],  // Holds the data we get from the database //
+      facilities: []
     };
   }
 
-  componentDidMount() {
-    const token = "trapp:tappass1";
-    const hash = Base64.encode(token);
-    const Basic = "Basic " + hash;
+  async componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      this.setState({ isLoading: false});
+    });
+    const { search } = this.state;
+    await this.fetchData(search);
+  }
 
-    Axios.get("http://taproot-dev.azurewebsites.net/api/residents.json", {
-      headers: { Authorization: Basic }
-    })
-      .then(response => response.data)
-      .then(data => {
-        this.setState({ isLoading: false, dataSource: data });
-      })
-      .catch(error => console.log(error));
+  componentWillUnmount() {
+    this.focusListener.remove(); // Make sure you unsubscribe from the listener //
+  }
+
+  async handleSearch(val) {
+    this.setState({ search: val });
+    await this.fetchData(val);
+  }
+
+  fetchData(search) {
+    var query = "SELECT * FROM tbl_residents WHERE last_name LIKE '%" + search + "%' ";
+    var params = [];
+    db.transaction((tx) => {
+      tx.executeSql(query, params, (tx, results) => {
+        if (results.rows._array.length > 0) {
+          this.setState({ data: results.rows._array });
+        }
+      }, function (tx, err) { console.log(err); });
+    });
+
   }
 
   render() {
@@ -53,22 +66,24 @@ class ResidentSelectionScreen extends React.Component {
             id={itemData.item.id}
             first_name={itemData.item.first_name}
             last_name={itemData.item.last_name}
-            facility={itemData.item.facility.name}
+            facility={itemData.item.facility}
             onSelectResident={() => {
               this.props.navigation.navigate({
                 routeName: "Resident",
-                params: { residentID: itemData.item.id }
+                params: { 
+                  residentID: itemData.item.id,
+                  authToken: this.props.navigation.getParam('authToken') 
+                }
               });
             }}
           />
         );
       };
 
-      const displayedResidents = this.state.dataSource.filter(
-        resident =>
-          resident.last_name
+      const displayedResidents = this.state.data.filter(
+        resident => resident.last_name 
             .toLocaleLowerCase()
-            .indexOf(this.state.searchKey) >= 0
+            .indexOf(this.state.search) >= 0
       );
 
       displayedResidents.sort((a, b) => a.last_name > b.last_name);
@@ -80,7 +95,7 @@ class ResidentSelectionScreen extends React.Component {
               style={Styles.residentSelection_SearchBar}
               placeholder="Search"
               onChangeText={value =>
-                this.setState({ searchKey: value.toLocaleLowerCase() })
+                this.setState({ search: value.toLocaleLowerCase() })
               }
             />
           </View>
@@ -104,10 +119,10 @@ ResidentSelectionScreen.navigationOptions = navData => {
     headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
-          title="Menu"
-          iconName="ios-menu"
+          title="Back"
+          iconName="ios-arrow-round-back"
           onPress={() => {
-            navData.navigation.toggleDrawer();
+            navData.navigation.pop();
           }}
         />
       </HeaderButtons>

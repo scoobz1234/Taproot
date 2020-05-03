@@ -1,16 +1,19 @@
+// Created by Stephen R. Ouellette, 2020 
+// Student University of Advancing Technology
 import React from "react";
 import {
   View,
   Text,
-  ScrollView,
-  TouchableOpacity,
+  FlatList,
   ActivityIndicator
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import Axios from "axios";
-import Base64 from "base-64";
 import HeaderButton from "../components/HeaderButton";
 import Styles from "../constants/Styles";
+import BehaviorItem from "../components/BehaviorItem";
+
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('taprootDB.db');
 
 class Interventions extends React.Component {
   constructor(props) {
@@ -23,41 +26,25 @@ class Interventions extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const token = "tradmin:devpasstaproot";
-    const hash = Base64.encode(token);
-    const Basic = "Basic " + hash;
-
-    Axios.get("http://taproot-dev.azurewebsites.net/api/behaviors.json", {
-      headers: { Authorization: Basic }
-    })
-      .then(response => response.data)
-      .then(data => {
-        this.setState({ isLoading: false, dataSource: data });
-      })
-      .catch(error => console.log(error));
+  componentDidMount() { 
+    this.getIntervention();
   }
 
-  onInterventionPress(
-    interventionID,
-    interventionInfo,
-    interventionURL,
-    interventionName,
-    behaviorID,
-    behaviorName,
-    behaviorURL,
-    behaviorInfo
-  ) {
-    this.props.navigation.navigate("Outcomes", {
-      interventionID: interventionID,
-      interventionInfo: interventionInfo,
-      interventionURL: interventionURL,
-      interventionName: interventionName,
-      behaviorID: behaviorID,
-      behaviorName: behaviorName,
-      behaviorURL: behaviorURL,
-      behaviorInfo: behaviorInfo
-    });
+  getIntervention(){
+    db.transaction(tx => {
+      tx.executeSql(
+        // SQL Statement string
+        "SELECT * FROM tbl_interventions WHERE behavior LIKE '%" + this.props.navigation.getParam("behaviorID") + "%'",
+        // parameters (these pertain to ? you might put into the SQL statement string)
+        [],
+        // Callback Success Function
+        (_, { rows }) => {
+          this.setState({dataSource: rows._array});
+          this.setState({isLoading: false});},
+        // Callback Error Function
+        (t, error) => {console.log('Get Interventions Callback Error:',error);});}, 
+      // Transaction Error Function
+      (t, error) => { console.log('Get Intervention Transaction Failure:',error);},);
   }
 
   render() {
@@ -68,39 +55,39 @@ class Interventions extends React.Component {
         </View>
       );
     } else {
-      const behaviorID = this.props.navigation.getParam("behaviorID");
 
-      const selectedBehavior = this.state.dataSource.find(
-        behavior => behavior.id === behaviorID
-      );
-      return (
-        <ScrollView style={Styles.interventions_MainView}>
-          {selectedBehavior.interventions.map((interventions, i) => {
-            return (
-              <TouchableOpacity
-                key={i}
-                onPress={() =>
-                  this.onInterventionPress(
-                    interventions.id,
-                    interventions.info,
-                    interventions.url,
-                    interventions.name,
-                    selectedBehavior.id,
-                    selectedBehavior.name,
-                    selectedBehavior.url,
-                    selectedBehavior.info
-                  )
+      const renderInterventionItem = itemData => {
+        return (
+          <BehaviorItem
+            id={itemData.item.id}
+            name={itemData.item.intervention_details}
+            onSelectBehavior={() => {
+              this.props.navigation.navigate({
+                routeName: "Outcomes",
+                params: {
+                  interventionID: itemData.item.id,
+                  residentID: this.props.navigation.getParam("residentID"),
+                  interventionInfo: itemData.item.intervention_details,
+                  behaviorID: this.props.navigation.getParam("behaviorID"),
+                  authToken: this.props.navigation.getParam('authToken')
                 }
-              >
-                <View style={Styles.interventions_InterventionListContainer}>
-                  <Text style={Styles.interventions_InterventionListText}>
-                    {interventions.info}{" "}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+              })
+            }}
+          />
+        );
+      };
+      return (
+        <View style={Styles.resident_MainView}>
+          <View style={Styles.resident_BottomContainer}>
+            <Text style={Styles.resident_BehaviorsLabel}>Interventions</Text>
+            <FlatList
+              keyExtractor={(item, index) => index.toString()}
+              data={this.state.dataSource} // FlatList contains the selected behaviors for the data
+              renderItem={renderInterventionItem} //render using the renderbehavioritem method
+              style={Styles.resident_BehaviorsList} // set styles
+            />
+          </View>
+        </View>
       );
     }
   }

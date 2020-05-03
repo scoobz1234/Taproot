@@ -1,21 +1,14 @@
 import React from "react";
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  TextInput,
-  Modal,
-  TouchableHighlight,
-  ScrollView,
-  ToastAndroid,
-  Keyboard,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback
-} from "react-native";
+import { View, TouchableOpacity, Text, TextInput, Modal, TouchableHighlight,
+  ScrollView, ToastAndroid, Keyboard, KeyboardAvoidingView, 
+  TouchableWithoutFeedback } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import Base64 from "base-64";
 import Axios from "axios";
 import StarRating from "react-native-star-rating";
+import moment from 'moment';
+
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('taprootDB.db');
 
 import HeaderButton from "../components/HeaderButton";
 import Colors from "../constants/Colors";
@@ -26,21 +19,28 @@ class OutcomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: "https://taproot-dev.azurewebsites.net/api/new-encounter/",
-      token: "tradmin:devpasstaproot",
-      notes: "",
-      rating: 1,
-      modalVisible: false
+      url: "http://taproot-dev.azurewebsites.net/api/encounters/",
+      token: "trapp:tappass1",
+      notes: "From App: ",
+      rating: 1.0,
+      modalVisible: false,
+      caregiverID: 0,
+      reactive_behavior: 0
     };
+  }
+
+
+  componentDidMount(){
+    this.getData(this.props.navigation.getParam("residentID"), this.props.navigation.getParam("behaviorID"));
   }
 
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
 
-  onRatingSubmit(behaviorURL, interventionURL) {
+  onRatingSubmit(interventionID, residentID) {
     this.setModalVisible(!this.state.modalVisible);
-    this.postRequest(behaviorURL, interventionURL, true);
+    this.postRequest(interventionID, residentID, true);
   }
 
   onNotesChange = notes => {
@@ -51,23 +51,57 @@ class OutcomeScreen extends React.Component {
     this.setState({ rating });
   };
 
-  postRequest(behaviorURL, interventionURL, didWork) {
-    const hash = Base64.encode(this.state.token);
-    const Auth = "Basic " + hash;
+  getData(residentID, behaviorID){
+    db.transaction(tx => {
+      tx.executeSql(
+        // SQL Statement string
+        "SELECT * FROM tbl_reactive_behaviors WHERE resident = ? AND behavior = ?",
+        // parameters (these pertain to ? you might put into the SQL statement string)
+        [residentID, behaviorID],
+        // Callback Success Function
+        (_, { rows }) => {
+
+          this.setState({reactive_behavior: rows._array[0].id});},
+        // Callback Error Function
+        (t, error) => {console.log('Get Interventions Callback Error:',error);});}, 
+      // Transaction Error Function
+      (t, error) => { console.log('Get Intervention Transaction Failure:',error);},);
+
+    db.transaction(tx => {
+      tx.executeSql(
+        "SELECT * FROM tbl_user", [], (_, { rows }) => {
+          this.setState({caregiverID: rows._array[0].id});
+          console.log('Caregiver:', this.state.caregiverID);
+        },
+        (t, error) => {console.log('Get Interventions Callback Error:',error);});}, 
+      (t, error) => { console.log('Get Intervention Transaction Failure:',error);},);
+  }
+
+  postRequest(interventionID, residentID, didWork) {
+    const auth = this.props.navigation.getParam('authToken');
+    const date = moment().format('YYYY-MM-DD');
+    const rating = this.state.rating;
+    const notes = this.state.notes;
+    const caregiverID = this.state.caregiverID;
+    const ra = this.state.reactive_behavior;
+    let outcome = 0;
+    if (didWork) { outcome = 1; }
 
     Axios.post(
       this.state.url,
       {
-        caregiver: "http://taproot-dev.azurewebsites.net/api/caregivers/1/",
-        behavior: behaviorURL,
-        intervention: interventionURL,
-        outcome: didWork,
-        behavior_rating: this.state.rating,
-        notes: this.state.notes
+        resident: residentID,
+        resistant_action: ra,
+        intervention: interventionID,
+        caregiver: caregiverID,
+        encounter_date: date,
+        outcome: outcome,
+        rating: rating,
+        notes: notes
       },
       {
         headers: {
-          Authorization: Auth,
+          Authorization: auth,
           "Content-Type": "application/json"
         }
       }
@@ -75,7 +109,7 @@ class OutcomeScreen extends React.Component {
       .then(response => {
         return console.log("SUCCESS: " + JSON.stringify(response));
       })
-      .catch(error => alert("ERROR: " + error));
+      .catch( error => { console.log("ERROR: " + error); } );
 
     if (didWork) {
       ToastAndroid.showWithGravityAndOffset(
@@ -95,8 +129,8 @@ class OutcomeScreen extends React.Component {
     // The following items get data from the previous screen that were sent as parameters...
     const params = this.props.navigation.state.params;
     const interventionInfo = params.interventionInfo;
-    const interventionURL = params.interventionURL;
-    const behaviorURL = params.behaviorURL;
+    const interventionID = params.interventionID;
+    const residentID = params.residentID;
 
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
@@ -110,7 +144,8 @@ class OutcomeScreen extends React.Component {
               <Text style={Styles.outcomes_Label}>Notes</Text>
               <Card style={Styles.outcomes_Card}>
                 <TextInput
-                  style={Styles.input}
+                  style={{height: 50}}
+                  multiline={true}
                   autoCapitalize="none"
                   placeholder="Enter Your Notes Here!"
                   onChangeText={this.onNotesChange}
@@ -144,7 +179,7 @@ class OutcomeScreen extends React.Component {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() =>
-                      this.postRequest(behaviorURL, interventionURL, false)
+                      this.postRequest(interventionID, residentID, false)
                     }
                   >
                     <View
@@ -195,7 +230,7 @@ class OutcomeScreen extends React.Component {
                     </View>
                     <TouchableHighlight
                       onPress={() => {
-                        this.onRatingSubmit(behaviorURL, interventionURL);
+                        this.onRatingSubmit(interventionID, residentID);
                       }}
                     >
                       <Text style={Styles.outcomes_SubmitText}>
