@@ -1,7 +1,7 @@
 # Taproot
 UAT-Taproot Project
 
-Stephen Ouellette - Project Lead - steouell@uat.edu  
+Stephen Ouellette - Project Lead / Frontend Programmer / Backend Programmer - steouell@uat.edu  
 Jose Ramirez - Netsec/Programmer - joseramir861@gmail.com<br>
 Brandon Nay - Back End Lead - brandonnay21@gmail.com<br>
 Joey Selamat - joeyselamat@gmail.com<br>
