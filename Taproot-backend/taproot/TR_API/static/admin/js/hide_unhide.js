@@ -1,3 +1,4 @@
+// Created By Stephen R Ouellette 2020 //
 (function($) {
   $(function() {
     function toggle(v, o) {

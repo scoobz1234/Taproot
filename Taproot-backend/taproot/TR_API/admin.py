@@ -1,8 +1,9 @@
 """ Admin page, (one page resident input model) """
+"""Created By Stephen R Ouellette 2020"""
 from django.contrib import admin
 from .forms import InterventionForm
 from .models import Demographic, Diagnoses, Admit, Favorites, History
-from .models import Medications, Resident, Reactive_Behaviors, Needs, Interventions
+from .models import Medications, Resident, Resistant_Actions, Needs, Interventions
 
 ############## INLINES ###################
 class DemographicInline(admin.StackedInline):
@@ -97,11 +98,11 @@ class NeedsInline(admin.StackedInline):
     model = Needs
     extra = 1
 
-class ReactiveBehaviorsInline(admin.StackedInline):
+class Resistant_ActionsInline(admin.StackedInline):
     """ Resistant Actions Inline uses Stacked Inline method """
     filter_horizontal = ('intervention',)
     fields = ('behavior', 'towards', 'frequency', 'time_of_day_occurs', 'intervention')
-    model = Reactive_Behaviors
+    model = Resistant_Actions
     extra = 1
 
 ############### MODEL ADMINS ###################
@@ -110,7 +111,7 @@ class ReactiveBehaviorsInline(admin.StackedInline):
 class ResidentAdmin(admin.ModelAdmin):
     """ Resident Admin model, uses inlines from above. """
     inlines = [DemographicInline, AdmitInline, DiagnosesInline, FavoritesInline, HistoryInline,
-               MedicationsInline, NeedsInline, ReactiveBehaviorsInline]
+               MedicationsInline, NeedsInline, Resistant_ActionsInline]
     list_display = ['last_name', 'first_name', 'date_of_birth', 'gender']
     list_filter = ('last_name',)
     fields = ('first_name', 'last_name'), ('preferred_name',), ('gender', 'date_of_birth')
@@ -119,11 +120,21 @@ class ResidentAdmin(admin.ModelAdmin):
 class InterventionAdmin(admin.ModelAdmin):
     """ Intervention admin model """
     form = InterventionForm
-    fields = ('intervention_name', 'resident_name', ('verb', 'subject'),
+    fields = ('intervention_name', ('resident', 'resident_name'), 'behavior', ('verb', 'subject'),
               'subject_detail', 'intervention_details')
     class Media:
         """ This adds the javascript code to the inline """
         js = ('admin/js/intervention_builder.js',)
+
+@admin.register(Resistant_Actions)
+class Resistant_ActionsAdmin(admin.ModelAdmin):
+    """ Reactive Behavior Admin Model """
+    fields = ('behavior','towards', 'frequency', 'time_of_day_occurs', 'resident', 'intervention')
+
+@admin.register(Admit)
+class AdmitAdmin(admin.ModelAdmin):
+    """ Admit Admin model """
+    fields = ('resident','facility','room_number','admit_date','discharge_date','discharged_to')
 
 # SETTINGS FOR PAGES #
 admin.site.site_header = "Taproot Admin"

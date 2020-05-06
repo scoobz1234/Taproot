@@ -1,6 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import Colors from "../constants/Colors";
+
+import { RFValue } from "react-native-responsive-fontsize";
 
 const BehaviorItem = props => {
   return (
@@ -16,16 +18,17 @@ const BehaviorItem = props => {
 
 const styles = StyleSheet.create({
   behaviorItem: {
-    height: 45,
-    width: "97%",
-    backgroundColor: Colors.tertiary,
+    height: Dimensions.get('screen').height * .08,
+    width: "100%",
+    backgroundColor: Colors.GREEN,
     borderRadius: 10,
     overflow: "hidden",
     alignItems: 'center',
-    margin: 3
+    justifyContent: 'center',
+    margin: 3,
   },
   lbl: {
-    fontSize: 22,
+    fontSize: RFValue(22, 680),
     fontWeight: "bold",
     color: 'white'
   }

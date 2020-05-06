@@ -1,4 +1,5 @@
 """Taproot models for the database and API website"""
+"""Created By Stephen R Ouellette 2020"""
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -52,6 +53,7 @@ class Admit(models.Model):
         verbose_name = 'Admission' # Changes how you see the table name on the admin page...
         verbose_name_plural = 'Admissions' # Changes how you see the plural name of the table...
 
+
 class Ailment(models.Model):
     """Ailment Table"""
     ailment = models.CharField(max_length=512)
@@ -63,6 +65,7 @@ class Ailment(models.Model):
         db_table = "ailments"
         verbose_name = 'Ailment'
         verbose_name_plural = 'Ailments'
+
 
 class Behavior(models.Model):
     """Behavior Table"""
@@ -77,6 +80,7 @@ class Behavior(models.Model):
         verbose_name = 'Behavior'
         verbose_name_plural = 'Behaviors'
 
+
 class States(models.Model):
     """ States Table """
     abbreviation = models.CharField(max_length=2)
@@ -89,6 +93,7 @@ class States(models.Model):
         db_table = "states"
         verbose_name = 'State'
         verbose_name_plural = 'States'
+
 
 class Caregiver(models.Model):
     """ Caregiver Tables """
@@ -104,12 +109,14 @@ class Caregiver(models.Model):
         verbose_name = 'Caregiver'
         verbose_name_plural = 'Caregivers'
 
+
 class Dementia_Severity(models.Model):
     """ Dementia Severity Table """
     severity = models.CharField(max_length=128)
 
     class Meta:
         db_table = "dementia_severity"
+
 
 class Demographic(models.Model):
     """ Demographic Table """
@@ -145,6 +152,7 @@ class Demographic(models.Model):
     class Meta:
         db_table = "demographic"
 
+
 class Dental_Diagnoses(models.Model):
     """ Dental Diagnoses Table """
     dental_problem = models.CharField(max_length=128)
@@ -156,6 +164,7 @@ class Dental_Diagnoses(models.Model):
         db_table = "dental_diagnoses"
         verbose_name = 'Dental Diagnoses'
         verbose_name_plural = 'Dental Diagnoses'
+
 
 class Diagnoses(models.Model):
     """ Diagnoses Table """
@@ -178,19 +187,23 @@ class Diagnoses(models.Model):
         verbose_name = 'Diagnoses'
         verbose_name_plural = 'Diagnoses'
 
+
 class Encounters(models.Model):
     """ Encounters Table """
     resident = models.ForeignKey('Resident', on_delete=models.PROTECT)
-    resistant_action = models.ForeignKey('Reactive_Behaviors', on_delete=models.PROTECT)
+    resistant_action = models.ForeignKey('Resistant_Actions', on_delete=models.PROTECT)
     intervention = models.ForeignKey('Interventions', on_delete=models.PROTECT)
     caregiver = models.ForeignKey('Caregiver', on_delete=models.PROTECT)
     rating = models.FloatField(max_length=3)
     notes = models.TextField(max_length=512)
+    encounter_date = models.CharField(max_length=512)
+    outcome = models.CharField(max_length=1, default='0')
 
     class Meta:
         db_table = "encounters"
         verbose_name = 'Encounter'
         verbose_name_plural = 'Encounters'
+
 
 class Facility(models.Model):
     """ Facitlity Table """
@@ -210,6 +223,7 @@ class Facility(models.Model):
         verbose_name = 'Facility'
         verbose_name_plural = 'Facilities'
 
+
 class Favorites(models.Model):
     """ Favorites Table """
     pid = models.IntegerField(null=True, blank=True)
@@ -219,7 +233,7 @@ class Favorites(models.Model):
     favorite_movie = models.CharField(max_length=128, null=True, blank=True)
     favorite_tv_show = models.CharField(max_length=128, null=True, blank=True)
     upset_by = models.CharField(max_length=512, null=True, blank=True)
-    likes_animals = models.CharField(max_length=1, choices=CHOICE, default='No',
+    likes_animals = models.CharField(max_length=1, choices=CHOICE, default='0',
                                      null=True, blank=True)
     personality = models.CharField(max_length=128, null=True, blank=True,
                                    verbose_name='Did they grow up being modest/shy?')
@@ -243,6 +257,7 @@ class Favorites(models.Model):
         verbose_name = 'Favorite'
         verbose_name_plural = 'Favorites'
 
+
 class Hearing_Diagnoses(models.Model):
     """ Hearing Diagnoses """
     hearing_problem = models.CharField(max_length=512)
@@ -254,6 +269,7 @@ class Hearing_Diagnoses(models.Model):
         db_table = "hearing_diagnoses"
         verbose_name = 'Hearing Diagnoses'
         verbose_name_plural = 'Hearing Diagnoses'
+
 
 class History(models.Model):
     """ History Table """
@@ -270,6 +286,7 @@ class History(models.Model):
         verbose_name = 'History'
         verbose_name_plural = 'Histories'
 
+
 class Injuries(models.Model):
     """ Inuries Table """
     injury = models.CharField(max_length=512)
@@ -282,10 +299,14 @@ class Injuries(models.Model):
         verbose_name = 'Injury'
         verbose_name_plural = 'Injuries'
 
+
 class Interventions(models.Model):
     """ Interventions Table """
     intervention_name = models.CharField(max_length=512)
     intervention_details = models.TextField(max_length=512)
+    resident = models.ForeignKey('Resident', on_delete=models.PROTECT)
+    behavior = models.ForeignKey('Behavior', on_delete=models.PROTECT)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.intervention_name
@@ -294,6 +315,7 @@ class Interventions(models.Model):
         db_table = "interventions"
         verbose_name = 'Intervention'
         verbose_name_plural = 'Interventions'
+
 
 class Medical_Diagnoses(models.Model):
     """ Medical Diagnoses Table """
@@ -306,6 +328,7 @@ class Medical_Diagnoses(models.Model):
         db_table = "medical_diagnoses"
         verbose_name = 'Medical Diagnoses'
         verbose_name_plural = 'Medical Diagnoses'
+
 
 class Medications(models.Model):
     """ Medications Table """
@@ -326,6 +349,7 @@ class Medications(models.Model):
         verbose_name = 'Medication'
         verbose_name_plural = 'Medications'
 
+
 class Mental_Health_Diagnoses(models.Model):
     """ Mental Health Diagnoses Table """
     mental_health_problem = models.CharField(max_length=512)
@@ -337,6 +361,7 @@ class Mental_Health_Diagnoses(models.Model):
         db_table = "mental_health_diagnoses"
         verbose_name = 'Mental Health Diagnoses'
         verbose_name_plural = 'Mental Health Diagnoses'
+
 
 class Needs(models.Model):
     """ Needs Table """
@@ -354,6 +379,7 @@ class Needs(models.Model):
         db_table = "needs"
         verbose_name = 'Need'
         verbose_name_plural = 'Needs'
+
 
 class Resident(models.Model):
     """ Resident Table """
@@ -374,19 +400,21 @@ class Resident(models.Model):
         verbose_name = 'Resident'
         verbose_name_plural = 'Residents'
 
-class Reactive_Behaviors(models.Model):
+
+class Resistant_Actions(models.Model):
     """ Resistant Actions Table """
     resident = models.ForeignKey('Resident', on_delete=models.PROTECT)
-    intervention = models.ManyToManyField('Interventions', blank=True)
+    intervention = models.ManyToManyField('Interventions',blank=True)
     behavior = models.ForeignKey('Behavior', on_delete=models.PROTECT)
     towards = models.CharField(max_length=128, choices=TOWARDS, default='None')
     frequency = models.CharField(max_length=128, choices=FREQUENCY, default='None')
-    time_of_day_occurs = models.CharField(max_length=128, choices=TIME_OF_THE_DAY)
+    time_of_day_occurs = models.CharField(max_length=128, choices=TIME_OF_THE_DAY, blank=True, null=True)
 
     class Meta:
         db_table = "resistant_actions"
         verbose_name = 'Reactive Behavior'
         verbose_name_plural = 'Reactive Behaviors'
+
 
 class Vision_Diagnoses(models.Model):
     """ Vision Diagnoses Table """
