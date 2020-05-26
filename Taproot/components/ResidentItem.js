@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 import Colors from "../constants/Colors";
 
 const ResidentItem = props => {
@@ -14,8 +15,8 @@ const ResidentItem = props => {
             />
           </View>
           <View style={{marginTop:5}}>
-            <Text style={styles.lbl}>Name: <Text style={styles.text}>{props.name}</Text></Text>
-            <Text style={styles.lbl}>ID: <Text style={styles.text}>{props.id}</Text></Text>
+            <Text style={styles.lbl}>Last: <Text style={styles.text}>{props.last_name}</Text></Text>
+            <Text style={styles.lbl}>First: <Text style={styles.text}>{props.first_name}</Text></Text>
             <Text style={styles.lbl}>Facility: <Text style={styles.text}>{props.facility}</Text></Text>
           </View>
         </View>
@@ -26,9 +27,9 @@ const ResidentItem = props => {
 
 const styles = StyleSheet.create({
   residentItem: {
-    height: 100,
+    justifyContent: 'flex-end',
     width: "97%",
-    backgroundColor: Colors.tertiary,
+    backgroundColor: Colors.GREEN,
     borderRadius: 10,
     overflow: "hidden",
     margin: 3
@@ -39,23 +40,18 @@ const styles = StyleSheet.create({
   image: {
     borderRadius: 10,
     overflow: 'hidden',
-    width: 90,
-    height: 90,
+    width: Dimensions.get('screen').width * .25,
+    height: Dimensions.get('screen').height * .15,
     margin: 5    
   },
   lbl: {
-      fontSize: 22,
+      fontSize: RFValue(26, 680),
       fontWeight: 'bold',
-      color: Colors.primary
+      color: Colors.NAVY
   },
   text: {
-      fontSize: 20,
+      fontSize: RFValue(22, 680),
       color: 'white'
-  },
-  container: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "flex-end"
   }
 });
 
