@@ -400,7 +400,6 @@ class Resident(models.Model):
         verbose_name = 'Resident'
         verbose_name_plural = 'Residents'
 
-
 class Resistant_Actions(models.Model):
     """ Resistant Actions Table """
     resident = models.ForeignKey('Resident', on_delete=models.PROTECT)
