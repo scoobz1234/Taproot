@@ -11,7 +11,7 @@
     "@expo/vector-icons": "^10.0.0",
     "@react-native-community/cookies": "^2.0.3",
     "@react-native-community/masked-view": "^0.1.5",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "base-64": "^0.1.0",
     "body-parser": "^1.19.0",
     "buffer": "^5.4.3",
